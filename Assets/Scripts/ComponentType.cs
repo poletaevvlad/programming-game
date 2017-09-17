@@ -11,7 +11,7 @@ public class ComponentType {
 	Connector[] outputs { get; set;}
 
 	public ComponentType getComponentType (ComponentTypeIndex index){
-
+		return new ComponentType();
 	}
 
 	// Use this for initialization

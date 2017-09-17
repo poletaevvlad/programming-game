@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 	
-enum ComponentTypeIndex{
+public enum ComponentTypeIndex{
 	Addition,
 	Conditional,
 	LineSplit,
