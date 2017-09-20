@@ -55,6 +55,8 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
+    - _AnimationX: 0.5
+    - _AnimationY: 0.5
     - _BumpScale: 1
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
@@ -63,9 +65,13 @@ Material:
     - _Glossiness: 0.5
     - _GlossyReflections: 1
     - _Metallic: 0
+    - _MinVisibility: 0.3
     - _Mode: 0
+    - _ObjectXScale: 1
+    - _ObjectYScale: 0.76978415
     - _OcclusionStrength: 1
     - _Parallax: 0.02
+    - _ShowAnimationTime: 0
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1

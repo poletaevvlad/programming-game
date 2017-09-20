@@ -5,8 +5,8 @@ using UnityEngine;
 public class Board {
 
 	Component[] component { get; set;}
-	int width { get; set;}
-	int heigth { get; set;}
+	public int width { get; set;}
+	public int heigth { get; set;}
 	ConnectionLine connections { get; set;}
 
 

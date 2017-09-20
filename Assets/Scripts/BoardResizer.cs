@@ -5,8 +5,10 @@ using UnityEditor;
 
 [ExecuteInEditMode]
 [RequireComponent(typeof(MeshRenderer))]
+[RequireComponent(typeof(BoardModel))]
 public class BoardResizer : MonoBehaviour {
 
+	private BoardModel boardModel = null;
 	public Camera mainCamera;
 		
 	[Header("Paddings")]
@@ -14,11 +16,6 @@ public class BoardResizer : MonoBehaviour {
 	public float topPadding = 0;
 	public float rightPadding = 0;
 	public float bottomPadding = 0;
-
-	[Header("Size")]
-	// Temporary variables. Will be removed when model is implemented
-	public int width;
-	public int height;
 
 	/* Storing screen dimensions in order to detect its change */
 	private int screenWidth = 0;
@@ -28,6 +25,8 @@ public class BoardResizer : MonoBehaviour {
 		if (mainCamera == null) {
 			Debug.LogError ("Main camera property must be set for BoardResizer script");
 		}
+		boardModel = GetComponent<BoardModel> ();
+		boardModel.rebuildRequiredEvent.AddListener(Resize);
 	}
 
 	void Update(){
@@ -39,11 +38,20 @@ public class BoardResizer : MonoBehaviour {
 	}
 
 	void OnValidate(){
-		// Reseting screen width. Resize() will be called on next Update.
+		// Reseting screen width. Resize() will be called on the next Update.
 		screenWidth = 0;
+	}
+
+	void OnDestroy(){
+		if (boardModel != null) {
+			boardModel.rebuildRequiredEvent.RemoveListener (Resize);
+		}
 	}
 		
 	public void Resize () {
+		if (boardModel == null || boardModel.board == null)
+			return;
+		int width = boardModel.board.width, height = boardModel.board.heigth;
 		transform.localScale = new Vector3(width + 1f / 32f, height + 1f / 32f, 1);
 
 		Material mat = GetComponent<MeshRenderer> ().sharedMaterial;
