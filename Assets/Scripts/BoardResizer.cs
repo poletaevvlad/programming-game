@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEditor;
 
 [ExecuteInEditMode]
-[RequireComponent(typeof(MeshRenderer))]
+[RequireComponent(typeof(BoardRenderer))]
 [RequireComponent(typeof(BoardModel))]
 public class BoardResizer : MonoBehaviour {
 
@@ -53,12 +53,7 @@ public class BoardResizer : MonoBehaviour {
 			return;
 		int width = boardModel.board.width, height = boardModel.board.heigth;
 		transform.localScale = new Vector3(width + 1f / 32f, height + 1f / 32f, 1);
-
-		Material mat = GetComponent<MeshRenderer> ().sharedMaterial;
-		mat.SetTextureScale ("_MainTex", new Vector2 (width + 1f / 32f, height + 1f/32f));
-		float maxDimension = Mathf.Max (transform.localScale.x, transform.localScale.y);
-		mat.SetFloat ("_ObjectXScale", transform.localScale.x / maxDimension);
-		mat.SetFloat ("_ObjectYScale", transform.localScale.y / maxDimension);
+		GetComponent<BoardRenderer> ().SetSize (width, height);
 
 		//TODO: Add additional grid texture sizes
 		float scale = screenHeight / 32f / 2f;
