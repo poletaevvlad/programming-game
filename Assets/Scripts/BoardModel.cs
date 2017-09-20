@@ -5,7 +5,7 @@ using UnityEngine.Events;
 
 [ExecuteInEditMode]
 public class BoardModel : MonoBehaviour {
-
+	
 	public Board _board;
 	public Board board {
 		private set{ _board = value; }
@@ -21,5 +21,11 @@ public class BoardModel : MonoBehaviour {
 
 		rebuildRequiredEvent.Invoke ();
 	}
+		
+	public void Resize (int width, int height){
+		board.width = width;
+		board.heigth = height;
+		rebuildRequiredEvent.Invoke ();
 
+	}
 }
