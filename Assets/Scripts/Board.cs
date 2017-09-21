@@ -5,9 +5,9 @@ using UnityEngine;
 
 [Serializable]
 public class Board {
-
 	private List<Component> _components { get; set;}
 	private List<ConnectionLine> _connections { get; set;}
+	private int[,] coord;
 
 	[SerializeField]
 	public int width;
@@ -34,4 +34,10 @@ public class Board {
 			_connections = new List<ConnectionLine> (value);
 		}
 	}
+
+	public void AddComponent(){}
+	public Component GetComponent(){ return new Component (); }
+	public void MoveComponent(){}
+	public void DeleteComponent(){}
+	public Coord SearchComponent(){ return new Coord (); }
 }
