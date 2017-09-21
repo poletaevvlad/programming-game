@@ -6,7 +6,8 @@ using UnityEngine;
 [Serializable]
 public class Board {
 
-	Component[] component { get; set;}
+	private List<Component> _components { get; set;}
+	private List<ConnectionLine> _connections { get; set;}
 
 	[SerializeField]
 	public int width;
@@ -14,5 +15,23 @@ public class Board {
 	[SerializeField]
 	public int heigth;
 
-	ConnectionLine connections { get; set;}
+	[SerializeField]
+	public Component[] components{
+		get{ 
+			return _components.ToArray ();
+		}
+		set {
+			_components = new List<Component> (value);
+		}
+	}
+
+	[SerializeField]
+	public ConnectionLine[] coonnections{
+		get{
+			return _connections.ToArray ();
+		}
+		set{
+			_connections = new List<ConnectionLine> (value);
+		}
+	}
 }
