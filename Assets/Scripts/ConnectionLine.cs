@@ -9,14 +9,4 @@ public class ConnectionLine {
 	int endComponentId { get; set;}
 	int endOutputIndex { get; set;}
 	Coord intermediatePoints { get; set;}
-		
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
 }
