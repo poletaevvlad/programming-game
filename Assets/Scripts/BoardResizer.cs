@@ -83,11 +83,11 @@ public class BoardResizer : MonoBehaviour {
     }
 
     public float CellWidth {
-        get { return 1; }
+        get { return 1 + 1f / 32f; }
     }
 
     public float CellHeight {
-        get { return 1; }
+        get { return 1 + 1f / 32f; }
     }
 
     private void OnDrawGizmosSelected(){
