@@ -35,11 +35,18 @@ public class ComponentGenerator : MonoBehaviour {
         spriteRenderer.size = new Vector2(width * boardResizer.CellWidth, height * boardResizer.CellHeight);
     }
     
-    private void InstantiateCircle(int r, int c, Vector3 relativePosition){
+    private void InstantiateCircle(int r, int c, Vector3 relativePosition, Vector3 arrowPosition, float rotation, bool horizontal){
         Transform newObject = Instantiate(parameters.circlePrefab, transform);
-        newObject.localPosition = relativePosition + new Vector3(c - (width - 1) / 2f, -r + (height - 1) / 2f);
+        float xOffset = !horizontal ? 0 : (1 - (width % 2)) * 1f / 64f;
+        float yOffset = !horizontal ? (1 - (height % 2)) * 1f / 64f : 0;
+        newObject.localPosition = relativePosition + new Vector3(c - (width) / 2f + xOffset + 0.5f, -r + (height) / 2f + yOffset - 0.5f);
+        if (arrowPosition != null) {
+            Transform arrow = Instantiate(parameters.arrowPrefab, newObject);
+            arrow.localPosition = arrowPosition;
+            arrow.rotation = Quaternion.Euler(0, 0, rotation);
+        }
     }
-    
+
     [ContextMenu("Clear content")]
     public void Clear(){
         while (transform.childCount > 0) {
@@ -49,13 +56,14 @@ public class ComponentGenerator : MonoBehaviour {
 
     [ContextMenu("Generate content")]
     public void Generate() {
+        // Todo: Добавить проверку на существование ввода/вывода
         for (int x = 0; x < width; x++) {
-            InstantiateCircle(0, x, parameters.topCirclePosition);
-            InstantiateCircle(height - 1, x, parameters.bottomCirclePosition);
+            InstantiateCircle(0, x, parameters.topCirclePosition, parameters.topArrowPosition, parameters.topArrowRotation, true);
+            InstantiateCircle(height - 1, x, parameters.bottomCirclePosition, parameters.bottomArrowPosition, parameters.bottomArrowRotation, true);
         }
         for (int y = 0; y < height; y++) {
-            InstantiateCircle(y, 0, parameters.leftCirclePosition);
-            InstantiateCircle(y, width - 1, parameters.rightCirclePosition);
+            InstantiateCircle(y, 0, parameters.leftCirclePosition, parameters.leftArrowPosition, parameters.leftArrowRotation, false);
+            InstantiateCircle(y, width - 1, parameters.rightCirclePosition, parameters.rightArrowPosition, parameters.rightArrowRotation, false);
         }
     }
 
