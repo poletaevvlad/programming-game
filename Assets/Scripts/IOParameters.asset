@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4afc7c84db80a134f9d884df139c6953, type: 3}
+  m_Name: IOParameters
+  m_EditorClassIdentifier: 
+  leftCirclePosition: {x: -0.375, y: 0, z: -0.5}
+  topCirclePosition: {x: 0, y: 0.375, z: -0.5}
+  rightCirclePosition: {x: 0.375, y: 0, z: -0.5}
+  bottomCirclePosition: {x: 0, y: -0.375, z: -0.5}
+  leftArrowPosition: {x: -0.52, y: -0.02250012, z: -1}
+  leftArrowRotation: 180
+  topArrowPosition: {x: -0.044, y: 0.52, z: -1}
+  topArrowRotation: 90
+  rightArrowPosition: {x: 0.52, y: 0.04, z: -1}
+  rightArrowRotation: 0
+  bottomArrowPosition: {x: 0.08, y: -0.52, z: -1}
+  bottomArrowRotation: 270
+  arrowPrefab: {fileID: 4938713794741924, guid: 6f31090a32b76bf4cbd65987e655d09b,
+    type: 2}
+  circlePrefab: {fileID: 4984415822315748, guid: 8b339486c037274479ae7f0bec2953e8,
+    type: 2}
