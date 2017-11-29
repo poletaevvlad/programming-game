@@ -73,4 +73,30 @@ public class BoardResizer : MonoBehaviour {
 		cameraPosition.y = (int)(cameraPosition.y * 32f) / 32f + (1 - screenHeight % 2) / 64f;
 		mainCamera.transform.position = cameraPosition;
 	}
+
+    public float GetLeft(int column){
+        return -transform.localScale.x / 2f + column;
+    }
+
+    public float GetTop(int row){
+        return transform.localScale.y / 2f - row;
+    }
+
+    public float CellWidth {
+        get { return 1; }
+    }
+
+    public float CellHeight {
+        get { return 1; }
+    }
+
+    private void OnDrawGizmosSelected(){
+        Gizmos.color = Color.red;
+        for (int x = 0; x < boardModel.board.width; x++) {
+            for (int y = 0; y < boardModel.board.heigth; y++) {
+                Gizmos.DrawSphere(new Vector3(GetLeft(x), GetTop(y), transform.position.z), 0.1f);
+            }
+        }
+        
+    }
 }
