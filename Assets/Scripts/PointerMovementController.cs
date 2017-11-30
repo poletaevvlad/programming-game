@@ -5,14 +5,26 @@ public class PointerMovementController : MonoBehaviour {
 
     public Camera raycastCamera = null;
 
+    private Transform previousHover = null;
+
 	void Update () {
         Ray ray = raycastCamera.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
 
-        string name = "-- empty --";
+        Transform newHover = null;
         if (Physics.Raycast(ray, out hit)) {
-            name = hit.transform.gameObject.ToString();
+            newHover = hit.transform;
         }
-        GameObject.Find("/Canvas/Debug text").GetComponent<Text>().text = name;
+
+        if (previousHover != newHover) {
+            ComponentIORenderer componentIORenderer;
+            if (previousHover != null && (componentIORenderer = previousHover.GetComponent<ComponentIORenderer>()) != null) {
+                componentIORenderer.HoverEnded();
+            }
+            if ((newHover != null) && (componentIORenderer = newHover.GetComponent<ComponentIORenderer>()) != null) {
+                componentIORenderer.HoverStarted();
+            }
+            previousHover = newHover;
+        }
     }
 }

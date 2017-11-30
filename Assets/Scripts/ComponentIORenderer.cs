@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class ComponentIORenderer : MonoBehaviour {
 
@@ -14,19 +12,18 @@ public class ComponentIORenderer : MonoBehaviour {
         }
     }
 
-    public float Radius {
-        get {
-            if (meshRenderer == null) {
-                return 0;
-            }
-            return meshRenderer.material.GetFloat("_Radius");
-        }
+    public float radius = 0.2f;
 
-        set {
-            if (Mathf.Abs(Radius - value) > Mathf.Epsilon) {
-                meshRenderer.material.SetFloat("_Radius", value);
-            }
-        }
+    private void Update() {
+        meshRenderer.material.SetFloat("_Radius", radius);
+    }
+
+    public void HoverStarted() {
+        GetComponent<Animator>().SetBool("Hover", true);
+    }
+
+    public void HoverEnded(){
+        GetComponent<Animator>().SetBool("Hover", false);
     }
 
 }
