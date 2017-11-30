@@ -35,14 +35,14 @@ public class ComponentGenerator : MonoBehaviour {
         spriteRenderer.size = new Vector2(width * boardResizer.CellWidth, height * boardResizer.CellHeight);
     }
     
-    private void InstantiateCircle(int r, int c, Vector3 relativePosition, Vector3 arrowPosition, float rotation, bool horizontal){
+    private void InstantiateCircle(int r, int c, Vector3 relativePosition, Vector3? arrowPosition, float rotation, bool horizontal){
         Transform newObject = Instantiate(parameters.circlePrefab, transform);
         float xOffset = !horizontal ? 0 : (1 - (width % 2)) * 1f / 64f;
         float yOffset = !horizontal ? (1 - (height % 2)) * 1f / 64f : 0;
         newObject.localPosition = relativePosition + new Vector3(c - (width) / 2f + xOffset + 0.5f, -r + (height) / 2f + yOffset - 0.5f);
         if (arrowPosition != null) {
             Transform arrow = Instantiate(parameters.arrowPrefab, newObject);
-            arrow.localPosition = arrowPosition;
+            arrow.localPosition = arrowPosition.Value;
             arrow.rotation = Quaternion.Euler(0, 0, rotation);
         }
     }
