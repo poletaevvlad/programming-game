@@ -21,7 +21,8 @@ GameObject:
   - component: {fileID: 4984415822315748}
   - component: {fileID: 33427288955614944}
   - component: {fileID: 23855765913721898}
-  m_Layer: 0
+  - component: {fileID: 65281775425087782}
+  m_Layer: 8
   m_Name: IOCircle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -80,3 +81,15 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1569753979649484}
   m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!65 &65281775425087782
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1569753979649484}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 6.1232336e-17}
+  m_Center: {x: 0, y: 0, z: 0}

@@ -16,11 +16,16 @@ public class ComponentIORenderer : MonoBehaviour {
 
     public float Radius {
         get {
+            if (meshRenderer == null) {
+                return 0;
+            }
             return meshRenderer.material.GetFloat("_Radius");
         }
 
         set {
-            meshRenderer.material.SetFloat("_Radius", value);
+            if (Mathf.Abs(Radius - value) > Mathf.Epsilon) {
+                meshRenderer.material.SetFloat("_Radius", value);
+            }
         }
     }
 
