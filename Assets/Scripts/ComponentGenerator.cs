@@ -2,15 +2,32 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(ComponentModel))]
 public class ComponentGenerator : MonoBehaviour {
-
-    public int column;
-    public int row;
-    public int width;
-    public int height;
     public IOBuilderParameters parameters;
 
     private BoardResizer boardResizer = null;
+
+    private Component _component = null;
+    private Component component {
+        get {
+            if (_component == null) {
+                _component = GetComponent<ComponentModel>().component;
+            }
+            return _component;
+        }
+    }
+
+    private ComponentType _componentType;
+    private ComponentType componentType {
+        get {
+            if (_componentType == null) {
+                _componentType = ComponentType.GetComponentType(component.type);
+            }
+            return _componentType;
+        }
+    }
+
 
     private void RequestResizer(){
         if (boardResizer == null) {
@@ -28,22 +45,36 @@ public class ComponentGenerator : MonoBehaviour {
     [ContextMenu("Update transform")]
     public void Position() {
         RequestResizer();
-        float xPosition = boardResizer.GetLeft(column) + boardResizer.CellWidth * width / 2;
-        float yPosition = boardResizer.GetTop(row) - boardResizer.CellHeight * height / 2;
+        float xPosition = boardResizer.GetLeft(component.coord.x) + boardResizer.CellWidth * componentType.width / 2;
+        float yPosition = boardResizer.GetTop(component.coord.y) - boardResizer.CellHeight * componentType.height / 2;
         transform.position = new Vector3(xPosition, yPosition, transform.position.z);
         SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
-        spriteRenderer.size = new Vector2(width * boardResizer.CellWidth, height * boardResizer.CellHeight);
+        spriteRenderer.size = new Vector2(componentType.width * boardResizer.CellWidth, componentType.height * boardResizer.CellHeight);
     }
     
-    private void InstantiateCircle(int r, int c, Vector3 relativePosition, Vector3? arrowPosition, float rotation, bool horizontal){
+    private static ConnectorDirection ReverseDirection(ConnectorDirection direction){
+        switch (direction) {
+            case ConnectorDirection.Left:
+                return ConnectorDirection.Right;
+            case ConnectorDirection.Right:
+                return ConnectorDirection.Left;
+            case ConnectorDirection.Up:
+                return ConnectorDirection.Down;
+            default:
+                return ConnectorDirection.Up;
+        }
+    }
+
+    private void InstantiateCircle(int r, int c, ConnectorDirection direction, bool isInput){
         Transform newObject = Instantiate(parameters.circlePrefab, transform);
-        float xOffset = !horizontal ? 0 : (1 - (width % 2)) * 1f / 64f;
-        float yOffset = !horizontal ? (1 - (height % 2)) * 1f / 64f : 0;
-        newObject.localPosition = relativePosition + new Vector3(c - (width) / 2f + xOffset + 0.5f, -r + (height) / 2f + yOffset - 0.5f);
-        if (arrowPosition != null) {
+        float xOffset = !(direction == ConnectorDirection.Left || direction == ConnectorDirection.Right) ? 0 : (1 - (componentType.width % 2)) * 1f / 64f;
+        float yOffset = !(direction == ConnectorDirection.Left || direction == ConnectorDirection.Right) ? (1 - (componentType.height % 2)) * 1f / 64f : 0;
+        newObject.localPosition = parameters.GetCirclePosition(direction) + new Vector3(c - componentType.width / 2f + xOffset + 0.5f, -r + componentType.height / 2f + yOffset - 0.5f);
+        if (isInput) {
+            direction = ReverseDirection(direction);
             Transform arrow = Instantiate(parameters.arrowPrefab, newObject);
-            arrow.localPosition = arrowPosition.Value;
-            arrow.rotation = Quaternion.Euler(0, 0, rotation);
+            arrow.localPosition = parameters.GetArrowPosition(direction);
+            arrow.rotation = Quaternion.Euler(0, 0, parameters.GetArrowRotation(direction));
         }
     }
 
@@ -56,14 +87,12 @@ public class ComponentGenerator : MonoBehaviour {
 
     [ContextMenu("Generate content")]
     public void Generate() {
-        // Todo: Добавить проверку на существование ввода/вывода
-        for (int x = 0; x < width; x++) {
-            InstantiateCircle(0, x, parameters.topCirclePosition, parameters.topArrowPosition, parameters.topArrowRotation, true);
-            InstantiateCircle(height - 1, x, parameters.bottomCirclePosition, parameters.bottomArrowPosition, parameters.bottomArrowRotation, true);
+        foreach (Connector input in componentType.inputs) {
+            InstantiateCircle(input.y, input.x, input.direction, true);
         }
-        for (int y = 0; y < height; y++) {
-            InstantiateCircle(y, 0, parameters.leftCirclePosition, parameters.leftArrowPosition, parameters.leftArrowRotation, false);
-            InstantiateCircle(y, width - 1, parameters.rightCirclePosition, parameters.rightArrowPosition, parameters.rightArrowRotation, false);
+
+        foreach (Connector output in componentType.outputs) {
+            InstantiateCircle(output.y, output.x, output.direction, false);
         }
     }
 

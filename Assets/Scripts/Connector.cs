@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-enum ConnectorDirection{
+public enum ConnectorDirection{
 	Left,
 	Right,
 	Up,
@@ -11,7 +11,7 @@ enum ConnectorDirection{
 
 public class Connector {
 
-	int x { get; set;}
-	int y { get; set;}
-	ConnectorDirection direction { get; set;}
+	public int x { get; set;}
+	public int y { get; set;}
+	public ConnectorDirection direction { get; set;}
 }

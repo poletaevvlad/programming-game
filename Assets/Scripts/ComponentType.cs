@@ -4,13 +4,22 @@ using UnityEngine;
 
 public class ComponentType {
 
-	int width { get; set;}
-	int heigth { get; set;}
-	string lebel { get; set;}
-	Connector[] inputs { get; set;}
-	Connector[] outputs { get; set;}
+	public int width { get; set;}
+	public int height { get; set;}
+	public string label { get; set;}
+	public Connector[] inputs { get; set;}
+	public Connector[] outputs { get; set;}
 
-	public ComponentType getComponentType (ComponentTypeIndex index){
-		return new ComponentType();
+	public static ComponentType GetComponentType (ComponentTypeIndex index){
+        return new ComponentType() {
+            width = 1,
+            height = 1,
+            inputs = new Connector[1] {
+                new Connector() { x = 0, y = 0, direction = ConnectorDirection.Left }
+            },
+            outputs = new Connector[1] {
+                new Connector() { x = 0, y = 0, direction = ConnectorDirection.Right }
+            }
+        };
 	}
 }

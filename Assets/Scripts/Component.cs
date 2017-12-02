@@ -10,8 +10,7 @@ public enum ComponentTypeIndex{
 }
 
 public class Component {
-
-	int id { get; set;}
-	Coord coord { get; set;}
-	ComponentTypeIndex type { get; set;}
+    int id { get; set;}
+    public Coord coord { get; set;}
+	public ComponentTypeIndex type { get; set;}
 }

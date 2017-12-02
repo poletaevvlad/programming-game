@@ -38,4 +38,49 @@ public class IOBuilderParameters : ScriptableObject {
     public Transform arrowPrefab;
     public Transform circlePrefab;
 
+    public Vector3 GetCirclePosition(ConnectorDirection direction){
+        switch (direction) {
+            case ConnectorDirection.Left:
+                return leftCirclePosition;
+            case ConnectorDirection.Right:
+                return rightCirclePosition;
+            case ConnectorDirection.Up:
+                return topCirclePosition;
+            case ConnectorDirection.Down:
+                return bottomCirclePosition;
+            default:
+                return Vector3.zero;
+        }
+    }
+
+    public Vector3 GetArrowPosition(ConnectorDirection direction){
+        switch (direction) {
+            case ConnectorDirection.Left:
+                return leftArrowPosition;
+            case ConnectorDirection.Right:
+                return rightArrowPosition;
+            case ConnectorDirection.Up:
+                return topArrowPosition;
+            case ConnectorDirection.Down:
+                return bottomArrowPosition;
+            default:
+                return Vector3.zero;
+        }
+    }
+
+    public float GetArrowRotation(ConnectorDirection direction){
+        switch (direction) {
+            case ConnectorDirection.Left:
+                return leftArrowRotation;
+            case ConnectorDirection.Right:
+                return rightArrowRotation;
+            case ConnectorDirection.Up:
+                return topArrowRotation;
+            case ConnectorDirection.Down:
+                return bottomArrowRotation;
+            default:
+                return 0.0f;
+        }
+    }
+
 }
