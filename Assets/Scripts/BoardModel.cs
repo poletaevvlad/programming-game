@@ -13,11 +13,11 @@ public class BoardModel : MonoBehaviour {
 	}
 
 	public UnityEvent rebuildRequiredEvent;
-		
+
 	public void Resize (int width, int height){
 		board.width = width;
 		board.heigth = height;
 		rebuildRequiredEvent.Invoke ();
-
 	}
+
 }
