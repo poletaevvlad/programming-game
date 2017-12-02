@@ -31,7 +31,7 @@ public class ComponentGenerator : MonoBehaviour {
 
     private void RequestResizer(){
         if (boardResizer == null) {
-            boardResizer = GameObject.Find("/Board").GetComponent<BoardResizer>();
+            boardResizer = GameObject.Find("/Field/Board").GetComponent<BoardResizer>();
         }
     }
 

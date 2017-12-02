@@ -16,9 +16,6 @@ public class BoardModelEditor : Editor {
 		}
 			
 		DrawDefaultInspector ();
-		if (GUILayout.Button ("Random")) {
-			model.GenerateRandom ();
-		}
 
 		if (model.board != null) {
 			GUILayout.BeginHorizontal ();

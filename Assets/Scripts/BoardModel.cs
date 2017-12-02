@@ -13,14 +13,6 @@ public class BoardModel : MonoBehaviour {
 	}
 
 	public UnityEvent rebuildRequiredEvent;
-
-	public void GenerateRandom(){
-		board = new Board ();
-		board.width = 16;
-		board.heigth = 10;
-
-		rebuildRequiredEvent.Invoke ();
-	}
 		
 	public void Resize (int width, int height){
 		board.width = width;

@@ -18,7 +18,7 @@ public class ComponentType {
                 new Connector() { x = 0, y = 0, direction = ConnectorDirection.Left }
             },
             outputs = new Connector[1] {
-                new Connector() { x = 0, y = 0, direction = ConnectorDirection.Right }
+                new Connector() { x = 0, y = 0, direction = ConnectorDirection.Right }  
             }
         };
 	}

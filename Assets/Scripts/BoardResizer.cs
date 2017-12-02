@@ -8,7 +8,6 @@ using UnityEditor;
 [RequireComponent(typeof(BoardModel))]
 public class BoardResizer : MonoBehaviour {
 
-	private BoardModel boardModel = null;
 	public Camera mainCamera;
 		
 	[Header("Paddings")]
@@ -25,8 +24,6 @@ public class BoardResizer : MonoBehaviour {
 		if (mainCamera == null) {
 			Debug.LogError ("Main camera property must be set for BoardResizer script");
 		}
-		boardModel = GetComponent<BoardModel> ();
-		boardModel.rebuildRequiredEvent.AddListener(Resize);
 	}
 
 	void Update(){
@@ -41,16 +38,12 @@ public class BoardResizer : MonoBehaviour {
 		// Reseting screen width. Resize() will be called on the next Update.
 		screenWidth = 0;
 	}
-
-	void OnDestroy(){
-		if (boardModel != null) {
-			boardModel.rebuildRequiredEvent.RemoveListener (Resize);
-		}
-	}
 		
+    [ContextMenu("Resize")]
 	public void Resize () {
-		if (boardModel == null || boardModel.board == null)
-			return;
+        BoardModel boardModel = GetComponentInParent<BoardModel>();
+		//if (boardModel == null || boardModel.board == null)
+		//	return;
 		int width = boardModel.board.width, height = boardModel.board.heigth;
 		transform.localScale = new Vector3(width + 1f / 32f, height + 1f / 32f, 1);
 		GetComponent<BoardRenderer> ().SetSize (width, height);
@@ -92,6 +85,7 @@ public class BoardResizer : MonoBehaviour {
 
     private void OnDrawGizmosSelected(){
         Gizmos.color = Color.red;
+        BoardModel boardModel = GetComponentInParent<BoardModel>();
         for (int x = 0; x < boardModel.board.width; x++) {
             for (int y = 0; y < boardModel.board.heigth; y++) {
                 Gizmos.DrawSphere(new Vector3(GetLeft(x), GetTop(y), transform.position.z), 0.1f);
