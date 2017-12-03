@@ -33,9 +33,11 @@ public class ConnectionLineRenderer : MonoBehaviour {
 
         List<Vector3> vertices = new List<Vector3>();
         int i = 0;
+        float distance = skipEndDist;
         float skipLength = Mathf.Max(skipStartDist, 0);
         while (i < coordinates.Length - 1) {
             float segmentDistance = ManhattanDistance(coordinates[i], coordinates[i + 1]);
+            distance -= segmentDistance;
             if (skipLength < segmentDistance) {
                 break;
             } else {
@@ -44,12 +46,20 @@ public class ConnectionLineRenderer : MonoBehaviour {
             }
         }
         if (i < coordinates.Length - 1) {
-            Debug.Log(skipLength);
             float angle = Mathf.Atan2(coordinates[i].y - coordinates[i + 1].y, -coordinates[i].x + coordinates[i + 1].x);
-            Vector3 point = Vector3.Lerp(CoordToVec3(coordinates[i]), CoordToVec3(coordinates[i + 1]), skipLength);
+            int currentDist = ManhattanDistance(coordinates[i], coordinates[i + 1]);
+            float lerpFactor = skipLength / currentDist;
+            distance += currentDist;
+            Vector3 point = Vector3.Lerp(CoordToVec3(coordinates[i]), CoordToVec3(coordinates[i + 1]), lerpFactor);
             vertices.Add(point + distSqrt2 * new Vector3(Mathf.Cos(angle - 3 * Mathf.PI / 4), Mathf.Sin(angle - 3 * Mathf.PI / 4)));
             vertices.Add(point + distSqrt2 * new Vector3(Mathf.Cos(angle + 3 * Mathf.PI / 4), Mathf.Sin(angle + 3 * Mathf.PI / 4)));
             for (i++; i < coordinates.Length - 1; i++) {
+                float segmentLength = ManhattanDistance(coordinates[i], coordinates[i - 1]);
+                if (distance < segmentLength) {
+                    i--;
+                    break;
+                }
+                distance -= segmentLength;
                 float bAngle = Mathf.Atan2(coordinates[i].y - coordinates[i + 1].y, -coordinates[i].x + coordinates[i + 1].x);
                 point = CoordToVec3(coordinates[i]);
                 vertices.Add(point + width / 2f / Mathf.Pow(Mathf.Cos((bAngle - angle) / 2), 2) *
@@ -60,7 +70,12 @@ public class ConnectionLineRenderer : MonoBehaviour {
                                                           Mathf.Sin(angle + Mathf.PI / 2) + Mathf.Sin(bAngle + Mathf.PI / 2)));
                 angle = bAngle;
             }
-            point = CoordToVec3(coordinates[coordinates.Length - 1]);
+
+            if (i == coordinates.Length - 1) {
+                i--;
+            }
+            lerpFactor = distance / ManhattanDistance(coordinates[i], coordinates[i + 1]);
+            point = Vector3.Lerp(CoordToVec3(coordinates[i]), CoordToVec3(coordinates[i + 1]), lerpFactor);
             vertices.Add(point + distSqrt2 * new Vector3(Mathf.Cos(angle + 7 * Mathf.PI / 4), Mathf.Sin(angle + 7 * Mathf.PI / 4)));
             vertices.Add(point + distSqrt2 * new Vector3(Mathf.Cos(angle - 7 * Mathf.PI / 4), Mathf.Sin(angle - 7 * Mathf.PI / 4)));
             int[] triangles = new int[3 * vertices.Count - 6];
@@ -83,6 +98,11 @@ public class ConnectionLineRenderer : MonoBehaviour {
 
     public void Update() {
         UpdateLine();
+    }
+
+    private void OnValidate(){
+        if (skipStartDist < 0) skipStartDist = 0;
+        if (skipEndDist < 0) skipEndDist = 0;
     }
 
     private static int ManhattanDistance(Coord a, Coord b){
