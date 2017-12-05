@@ -67,6 +67,7 @@ public class ComponentGenerator : MonoBehaviour {
 
     private void InstantiateCircle(int r, int c, ConnectorDirection direction, bool isInput){
         Transform newObject = Instantiate(parameters.circlePrefab, transform);
+        newObject.GetComponent<ComponentIORenderer>().isInput = isInput;
         float xOffset = !(direction == ConnectorDirection.Left || direction == ConnectorDirection.Right) ? 0 : (1 - (componentType.width % 2)) * 1f / 64f;
         float yOffset = !(direction == ConnectorDirection.Left || direction == ConnectorDirection.Right) ? (1 - (componentType.height % 2)) * 1f / 64f : 0;
         newObject.localPosition = parameters.GetCirclePosition(direction) + new Vector3(c - componentType.width / 2f + xOffset + 0.5f, -r + componentType.height / 2f + yOffset - 0.5f);

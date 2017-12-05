@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class ComponentIORenderer : MonoBehaviour {
 
@@ -12,6 +13,8 @@ public class ComponentIORenderer : MonoBehaviour {
         }
     }
 
+    public bool isInput;
+
     public float radius = 0.2f;
 
     private void Update() {
@@ -19,11 +22,26 @@ public class ComponentIORenderer : MonoBehaviour {
     }
 
     public void HoverStarted() {
-        GetComponent<Animator>().SetBool("Hover", true);
+        if (!isInput) {
+            GetComponent<Animator>().SetBool("Hover", true);
+        }
     }
 
     public void HoverEnded(){
-        GetComponent<Animator>().SetBool("Hover", false);
+        if (!isInput) {
+            GetComponent<Animator>().SetBool("Hover", false);   
+        }
     }
 
+    public void Pressed() {
+        if (!isInput) {
+            GetComponent<Animator>().SetBool("Pressed", true);
+        }
+    }
+
+    public void Released() {
+        if (!isInput) {
+            GetComponent<Animator>().SetBool("Pressed", false);
+        }
+    }
 }

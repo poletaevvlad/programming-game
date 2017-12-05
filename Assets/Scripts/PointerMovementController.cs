@@ -3,9 +3,15 @@
 [RequireComponent(typeof(BoardModel))]
 public class PointerMovementController : MonoBehaviour {
 
-    public Camera raycastCamera = null;
+    public enum State {
+        Normal, DrawingConnection
+    }
 
+    private State state = State.Normal;
+
+    public Camera raycastCamera = null;
     private Transform previousHover = null;
+    private ComponentIORenderer outputIORenderer = null;
 
     public int CurrentX;
     public int CurrentY;
@@ -18,16 +24,27 @@ public class PointerMovementController : MonoBehaviour {
 
     void Update () {
         Ray ray = raycastCamera.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
         UpdatePoint(ray.origin);
 
+        switch (state) {
+            case State.Normal:
+                HandleHovering(ray);
+                break;
+            case State.DrawingConnection:
+                HandleDrawingConnection(ray);
+                break;
+        }
+    }
+
+    private void HandleHovering(Ray screenRay) {
         Transform newHover = null;
-        if (Physics.Raycast(ray, out hit)) {
+        RaycastHit hit;
+        if (Physics.Raycast(screenRay, out hit)) {
             newHover = hit.transform;
         }
+        ComponentIORenderer componentIORenderer;
 
         if (previousHover != newHover) {
-            ComponentIORenderer componentIORenderer;
             if (previousHover != null && (componentIORenderer = previousHover.GetComponent<ComponentIORenderer>()) != null) {
                 componentIORenderer.HoverEnded();
             }
@@ -35,6 +52,25 @@ public class PointerMovementController : MonoBehaviour {
                 componentIORenderer.HoverStarted();
             }
             previousHover = newHover;
+        }
+
+        if (previousHover != null && (componentIORenderer = previousHover.GetComponent<ComponentIORenderer>()) != null) {
+            if (!componentIORenderer.isInput && Input.GetKeyDown(KeyCode.Mouse0)) {
+                outputIORenderer = componentIORenderer;
+                outputIORenderer.Pressed();
+                state = State.DrawingConnection;
+            }
+        }
+    }
+
+    private void HandleDrawingConnection(Ray screenRay) {
+        if (Input.GetKeyUp(KeyCode.Mouse0)) {
+            RaycastHit raycast;
+            if (!outputIORenderer.GetComponent<Collider>().Raycast(screenRay, out raycast, 1000)) {
+                outputIORenderer.HoverEnded();
+            }
+            outputIORenderer.Released();
+            state = State.Normal;
         }
     }
 
