@@ -11,6 +11,7 @@ public enum ComponentTypeIndex{
 
 public class Component {
     int id { get; set;}
-    public Coord coord { get; set;}
+    private Coord _coord;
+    public Coord coord { get { return _coord; } set { _coord = value; Debug.Log("coord set"); } }
 	public ComponentTypeIndex type { get; set;}
 }

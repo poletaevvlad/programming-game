@@ -12,7 +12,9 @@ public class PointerMovementController : MonoBehaviour {
     public Camera raycastCamera = null;
     private Transform previousHover = null;
     private ComponentIORenderer outputIORenderer = null;
+    private ConnectionLineRenderer connectionLine = null;
 
+    public ConnectionLineRenderer connectionLinePrefab;
     public int CurrentX;
     public int CurrentY;
 
@@ -59,11 +61,20 @@ public class PointerMovementController : MonoBehaviour {
                 outputIORenderer = componentIORenderer;
                 outputIORenderer.Pressed();
                 state = State.DrawingConnection;
+
+                connectionLine = Instantiate(connectionLinePrefab, transform);
+                Component component = outputIORenderer.transform.parent.GetComponent<ComponentModel>().component;
+                connectionLine.Append(component.coord);
             }
         }
     }
 
     private void HandleDrawingConnection(Ray screenRay) {
+        Coord lastCell = connectionLine.GetLast();
+        if (lastCell.x != CurrentX || lastCell.y != CurrentY) {
+            connectionLine.Append(CurrentX, CurrentY);
+        }
+
         if (Input.GetKeyUp(KeyCode.Mouse0)) {
             RaycastHit raycast;
             if (!outputIORenderer.GetComponent<Collider>().Raycast(screenRay, out raycast, 1000)) {
@@ -71,6 +82,7 @@ public class PointerMovementController : MonoBehaviour {
             }
             outputIORenderer.Released();
             state = State.Normal;
+            Destroy(connectionLine.gameObject);
         }
     }
 
