@@ -95,4 +95,7 @@ MonoBehaviour:
   coordinates: []
   width: 0.03125
   skipStartDist: 0
-  skipEndDist: 8
+  skipEndDist: 0
+  targetSkipStartDist: 0
+  targetSkipEndDist: 0
+  animationSpeed: 15

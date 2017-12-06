@@ -12,6 +12,9 @@ public class ConnectionLineRenderer : MonoBehaviour {
     public float width;
     public float skipStartDist;
     public float skipEndDist;
+    public float targetSkipStartDist;
+    public float targetSkipEndDist;
+    public float animationSpeed;
 
     private BoardResizer _boardResizer = null;
     public BoardResizer boardResizer {
@@ -107,15 +110,32 @@ public class ConnectionLineRenderer : MonoBehaviour {
     }
 
     public void Append(Coord coord){
+        if (coordinates.Count > 0) {
+            targetSkipEndDist += ManhattanDistance(coord, coordinates[coordinates.Count - 1]);
+        }
         coordinates.Add(coord);
-        Debug.Log(String.Format("appended (x: {0}, y: {1})", coord.x, coord.y));
     }
 
     public Coord GetLast(){
         return coordinates[coordinates.Count - 1];
     }
 
+    public float AnimateValue(float target, float value, float delta){
+        if (value > target) {
+            value = Math.Max(target, value - delta);
+        } else {
+            value = Math.Min(target, value + delta);
+        }
+        return value;
+    }
+
     public void Update() {
+        if (Mathf.Abs(targetSkipEndDist - skipEndDist) > Mathf.Epsilon) {
+            skipEndDist = AnimateValue(targetSkipEndDist, skipEndDist, animationSpeed * Time.deltaTime * Math.Abs(targetSkipEndDist - skipEndDist));
+        }
+        if (Mathf.Abs(targetSkipStartDist - skipStartDist) > Mathf.Epsilon) {
+            skipStartDist = AnimateValue(targetSkipStartDist, skipStartDist, animationSpeed * Time.deltaTime * Math.Abs(targetSkipEndDist - skipEndDist));
+        }
         UpdateLine();
     }
 

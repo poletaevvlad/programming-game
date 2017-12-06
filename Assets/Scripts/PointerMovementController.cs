@@ -82,7 +82,7 @@ public class PointerMovementController : MonoBehaviour {
             }
             outputIORenderer.Released();
             state = State.Normal;
-            Destroy(connectionLine.gameObject);
+            //Destroy(connectionLine.gameObject);
         }
     }
 
