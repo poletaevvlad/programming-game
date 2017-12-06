@@ -63,6 +63,7 @@ public class PointerMovementController : MonoBehaviour {
                 state = State.DrawingConnection;
 
                 connectionLine = Instantiate(connectionLinePrefab, transform);
+                UnityEditor.Selection.activeObject = connectionLine;
                 Component component = outputIORenderer.transform.parent.GetComponent<ComponentModel>().component;
                 connectionLine.Append(component.coord);
             }
@@ -71,8 +72,15 @@ public class PointerMovementController : MonoBehaviour {
 
     private void HandleDrawingConnection(Ray screenRay) {
         Coord lastCell = connectionLine.GetLast();
-        if (lastCell.x != CurrentX || lastCell.y != CurrentY) {
-            connectionLine.Append(CurrentX, CurrentY);
+        if ((lastCell.x != CurrentX || lastCell.y != CurrentY) && CurrentX >= 0 && CurrentY >= 0) {
+            int x = lastCell.x, y = lastCell.y;
+            while (x != CurrentX || y != CurrentY) {
+                if (x < CurrentX) x++;
+                else if (x > CurrentX) x--;
+                else if (y < CurrentY) y++;
+                else if (y > CurrentY) y--;
+                connectionLine.Append(x, y);
+            }   
         }
 
         if (Input.GetKeyUp(KeyCode.Mouse0)) {
@@ -82,7 +90,7 @@ public class PointerMovementController : MonoBehaviour {
             }
             outputIORenderer.Released();
             state = State.Normal;
-            //Destroy(connectionLine.gameObject);
+            Destroy(connectionLine.gameObject);
         }
     }
 

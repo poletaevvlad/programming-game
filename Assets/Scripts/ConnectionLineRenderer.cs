@@ -102,14 +102,30 @@ public class ConnectionLineRenderer : MonoBehaviour {
         }
     }
 
-    internal void Append(int x, int y){
+    public void Append(int x, int y){
         Coord coord = new Coord();
         coord.x = x;
         coord.y = y;
         Append(coord);
     }
 
+    private bool IsBetween(Coord a, Coord b, Coord c) {
+        return ((a.x <= c.x && c.x <= b.x) || (b.x <= c.x && c.x <= a.x)) && ((a.y <= c.y && c.y <= b.y) || (b.y <= c.y && c.y <= a.y));
+    }
+
     public void Append(Coord coord){
+        // TODO: handle segment removal animation
+        if (coordinates.Count > 1) {
+            targetSkipEndDist = 0;
+            for (int i = 1; i < coordinates.Count; i++) {
+                if (IsBetween(coordinates[i], coordinates[i - 1], coord)) {
+                    coordinates.RemoveRange(i, coordinates.Count - i);
+                    break;
+                } else {
+                    targetSkipEndDist += ManhattanDistance(coordinates[i], coordinates[i - 1]);
+                }
+            }
+        }
         if (coordinates.Count > 0) {
             targetSkipEndDist += ManhattanDistance(coord, coordinates[coordinates.Count - 1]);
         }
