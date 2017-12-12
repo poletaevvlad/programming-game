@@ -35,9 +35,25 @@ public class Board {
 		}
 	}
 
-	public void AddComponent(){}
-	public Component GetComponent(){ return new Component (); }
+	public void AddComponent(Component component){
+        _components.Add(component);
+    }
+    public void DeleteComponent(Component component) {
+        _components.Remove(component);
+    }
+    public Component SearchComponent(Coord coord) {
+        foreach (Component t in _components)
+            if (t.coord == coord)
+                return t;
+        throw new ArgumentException("Компонент не найден");
+    }
+    public ConnectionLine SearchLine(Coord coord) {
+        foreach (ConnectionLine t in _connections)
+            if (t.intermediatePoints == coord)
+                return t;
+        throw new ArgumentException("Линия не найдена");
+    }
+    //Думаю это не надо уже
+	//public Component GetComponent(){ return new Component (); }
 	public void MoveComponent(){}
-	public void DeleteComponent(){}
-	public Coord SearchComponent(){ return new Coord (); }
 }
