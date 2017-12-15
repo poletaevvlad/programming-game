@@ -25,6 +25,6 @@ public struct Coord{
     public static bool operator !=(Coord obj1, Coord obj2) {
         if (obj1.x != obj2.x || obj1.y != obj2.y)
             return true;
-        return true;
+        return false;
     }
 }
