@@ -4,6 +4,6 @@ using UnityEngine;
 
 public abstract class ExecutionDisplayElementFactory : MonoBehaviour {
 
-    public abstract RectTransform CreateElement(int index);
+    public abstract RectTransform CreateElement(int index, Transform parent);
 
 }

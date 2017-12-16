@@ -1,12 +1,16 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ExecutionDisplayCounterFactory : ExecutionDisplayElementFactory{
 
-    public override RectTransform CreateElement(int index){
-        throw new NotImplementedException();
+    public Text textPrefab;
+
+    public override RectTransform CreateElement(int index, Transform parent){
+        Text text = Instantiate(textPrefab, parent);
+        text.text = index.ToString();
+        return text.GetComponent<RectTransform>();
+
     }
 
 }
