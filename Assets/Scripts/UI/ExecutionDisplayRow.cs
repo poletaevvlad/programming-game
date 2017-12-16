@@ -11,6 +11,7 @@ public class ExecutionDisplayRow : MonoBehaviour {
 
     public float firstOffset = 15;
     public float step = 30;
+    public float yOffset = -8f;
     
     private int firstIndex = -1;
     private int lastIndex = -1;
@@ -53,7 +54,7 @@ public class ExecutionDisplayRow : MonoBehaviour {
                 firstIndex = 0;
             }
             RectTransform newObject = factory.CreateElement(lastIndex, transform);
-            newObject.localPosition = new Vector3(firstOffset + step * lastIndex, -8f);
+            newObject.localPosition = new Vector3(firstOffset + step * lastIndex, yOffset);
             items.AddLast(newObject);
         }
         
@@ -68,7 +69,7 @@ public class ExecutionDisplayRow : MonoBehaviour {
         while (items.Count == 0 || (firstIndex > 0 && items.First.Value.localPosition.x > startOffset)) {
             firstIndex--;
             RectTransform newObject = factory.CreateElement(firstIndex, transform);
-            newObject.localPosition = new Vector3(firstOffset + step * firstIndex, -8f);
+            newObject.localPosition = new Vector3(firstOffset + step * firstIndex, yOffset);
             items.AddFirst(newObject);
             if (firstIndex < -50) return;
         }
