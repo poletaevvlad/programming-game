@@ -475,7 +475,7 @@ GameObject:
   - component: {fileID: 700596637}
   - component: {fileID: 700596638}
   m_Layer: 5
-  m_Name: Row
+  m_Name: StepNumber
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -512,6 +512,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   textPrefab: {fileID: 114116985139181018, guid: af044fcb4a52b204e9b81f2909b86843,
     type: 2}
+  initialValue: 1
 --- !u!114 &700596638
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -525,8 +526,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scrollRect: {fileID: 1288643305}
   viewportRect: {fileID: 598029816}
-  firstOffset: 15
-  step: 30
+  firstOffset: 13
+  step: 26
 --- !u!1 &802406099
 GameObject:
   m_ObjectHideFlags: 0
@@ -839,6 +840,7 @@ GameObject:
   - component: {fileID: 1288643303}
   - component: {fileID: 1288643305}
   - component: {fileID: 1288643306}
+  - component: {fileID: 1288643307}
   m_Layer: 5
   m_Name: ExecutionBackground
   m_TagString: Untagged
@@ -915,7 +917,7 @@ MonoBehaviour:
   m_MovementType: 1
   m_Elasticity: 0.1
   m_Inertia: 1
-  m_DecelerationRate: 0.135
+  m_DecelerationRate: 0.01
   m_ScrollSensitivity: 1
   m_Viewport: {fileID: 0}
   m_HorizontalScrollbar: {fileID: 0}
@@ -927,9 +929,9 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 700596638}
+      - m_Target: {fileID: 1288643307}
         m_MethodName: OnScrolled
-        m_Mode: 0
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -951,6 +953,19 @@ MonoBehaviour:
   m_Script: {fileID: -146154839, guid: f70555f144d8491a825f0804e09c671c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1288643307
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1288643301}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5041c04d8f76b5543aa99f3c68e7bf9d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  viewportTransform: {fileID: 598029816}
+  addedSize: 150
 --- !u!1 &1292051805
 GameObject:
   m_ObjectHideFlags: 0
