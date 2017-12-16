@@ -6,7 +6,8 @@ public enum ComponentTypeIndex{
 	Addition,
 	Conditional,
 	LineSplit,
-	LineIntersection
+	LineIntersection,
+    Memory
 }
 
 public class Component {
