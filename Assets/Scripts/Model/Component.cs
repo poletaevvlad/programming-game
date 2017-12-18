@@ -4,10 +4,14 @@ using UnityEngine;
 	
 public enum ComponentTypeIndex{
 	Addition,
-	Conditional,
-	LineSplit,
-	LineIntersection,
-    Memory
+    Negative,
+    Multiplication,
+    Inverse,
+    Memory,
+    Conditional,
+    Value,
+    Increment,
+    Decrement
 }
 
 public class Component {
