@@ -1,11 +1,13 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[Serializable]
 public class ConnectionLine {
-	int startComponentId { get; set;}
-	int startOutputIndex { get; set;}
-	int endComponentId { get; set;}
-	int endOutputIndex { get; set;}
-	public Coord intermediatePoints { get; set;}
+    public int startComponentId;
+    public int startOutputIndex;
+    public int endComponentId;
+    public int endOutputIndex;
+    public Coord[] intermediatePoints;
 }

@@ -1,17 +1,21 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-	
+
 public enum ComponentTypeIndex{
 	Addition,
-	Conditional,
-	LineSplit,
-	LineIntersection,
-    Memory
+    Negative,
+    Multiplication,
+    Inverse,
+    Memory,
+    Conditional,
+    Value,
+    Increment,
+    Decrement
 }
-
+[System.Serializable]
 public class Component {
-    int id { get; set;}
-    public Coord coord { get; set; }
-	public ComponentTypeIndex type { get; set;}
+    public int id;
+    public Coord coord;
+    public ComponentTypeIndex type;
 }
