@@ -42,9 +42,15 @@ public class Board {
         _components.Remove(component);
     }
     public Component SearchComponent(Coord coord) {
-        foreach (Component t in _components)
-            if (t.coord == coord)
-                return t;
+        foreach (Component t in _components) {
+            ComponentType componentType = ComponentType.GetComponentType(t.type);
+            for (int i = 0; i < componentType.height; i++)
+                if (t.coord.y + i == coord.y && t.coord.x == coord.x)
+                    return t;
+            for (int i = 0; i < componentType.width; i++)
+                if (t.coord.x + i == coord.x && t.coord.y == coord.y)
+                    return t;
+        }
         throw new ArgumentException("Компонент не найден");
     }
     public ConnectionLine SearchLine(Coord coord) {
