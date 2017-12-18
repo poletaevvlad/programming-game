@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System;
+using System.Linq;
 
 [RequireComponent(typeof(BoardModel))]
 public class PointerMovementController : MonoBehaviour {
@@ -69,11 +70,12 @@ public class PointerMovementController : MonoBehaviour {
 
                 connectionLine = Instantiate(connectionLinePrefab, transform);
                 Component component = outputIORenderer.transform.parent.GetComponent<ComponentModel>().component;
-                lineStartComponentId = component.id;
+                connectionLine.startComponentId = lineStartComponentId = component.id;
 
                 Connector connector = outputIORenderer.connector;
-                lineStartConnectorIndex = Array.IndexOf(ComponentType.GetComponentType(component.type).outputs, connector);
+                connectionLine.startConnectorIndex = lineStartConnectorIndex = Array.IndexOf(ComponentType.GetComponentType(component.type).outputs, connector);
                 connectionLine.Append(new Coord(CurrentX, CurrentY));
+                RemoveConnection(component.id, lineStartConnectorIndex);
                 switch (connector.direction) {
                     case ConnectorDirection.Left:
                         possibleNextMove = new Coord(CurrentX - 1, CurrentY);
@@ -106,6 +108,26 @@ public class PointerMovementController : MonoBehaviour {
     private Coord? possibleNextMove = null;
     private int lineEndComponentId = -1;
     private int lineEndConnectorIndex = -1;
+
+    private void RemoveConnection(int startComponentId, int startConnectionIndex){
+        bool connectionExists = false;
+        for (int i = 0; i < model.board._connections.Count; i++) {
+            ConnectionLine connectionLine = model.board._connections[i];
+            if (connectionLine.startComponentId == startComponentId && connectionLine.startOutputIndex == startConnectionIndex) {
+                connectionExists = true;
+                model.board._connections.RemoveAt(i);
+            }
+        }
+        if (connectionExists) {
+            foreach (Transform child in transform.Cast<Transform>().ToArray()) {
+                ConnectionLineRenderer lineRenderer = child.GetComponent<ConnectionLineRenderer>();
+                if (lineRenderer != null && lineRenderer != connectionLine && lineRenderer.startComponentId == startComponentId && 
+                    lineRenderer.startConnectorIndex == lineStartConnectorIndex) {
+                    lineRenderer.Disconnect();
+                }
+            }
+        }
+    }
 
     private void HandleDrawingConnection(Ray screenRay) {
         Coord lastCell = connectionLine.GetLast();

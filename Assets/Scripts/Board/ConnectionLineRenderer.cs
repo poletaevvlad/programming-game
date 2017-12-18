@@ -16,6 +16,11 @@ public class ConnectionLineRenderer : MonoBehaviour {
     public float targetSkipEndDist;
     public float animationSpeed;
 
+    public int startComponentId;
+    public int startConnectorIndex;
+
+    private bool shouldDelete = false;
+
     private BoardResizer _boardResizer = null;
     public BoardResizer boardResizer {
         get {
@@ -107,6 +112,11 @@ public class ConnectionLineRenderer : MonoBehaviour {
         skipStartDist = targetSkipStartDist;
     }
 
+    public void Disconnect(){
+        shouldDelete = true;
+        targetSkipStartDist = targetSkipEndDist;
+    }
+
     public void Append(int x, int y){
         Coord coord = new Coord();
         coord.x = x;
@@ -151,11 +161,13 @@ public class ConnectionLineRenderer : MonoBehaviour {
     }
 
     public void Update() {
-        if (Mathf.Abs(targetSkipEndDist - skipEndDist) > Mathf.Epsilon) {
+        if (Mathf.Abs(targetSkipEndDist - skipEndDist) > 1e-4) {
             skipEndDist = AnimateValue(targetSkipEndDist, skipEndDist, animationSpeed * Time.deltaTime * Math.Abs(targetSkipEndDist - skipEndDist));
         }
-        if (Mathf.Abs(targetSkipStartDist - skipStartDist) > Mathf.Epsilon) {
-            skipStartDist = AnimateValue(targetSkipStartDist, skipStartDist, animationSpeed * Time.deltaTime * Math.Abs(targetSkipEndDist - skipEndDist));
+        if (Mathf.Abs(targetSkipStartDist - skipStartDist) > 1e-4) {
+            skipStartDist = AnimateValue(targetSkipStartDist, skipStartDist, animationSpeed * Time.deltaTime * Math.Abs(targetSkipStartDist - skipStartDist));
+        } else if (shouldDelete) {
+            Destroy(gameObject);
         }
         UpdateLine();
     }

@@ -49,6 +49,8 @@ public class FieldInitializator : MonoBehaviour {
         foreach (Coord coord in connectionLine.intermediatePoints) {
             lineRenderer.Append(coord);
         }
+        lineRenderer.startComponentId = connectionLine.startComponentId;
+        lineRenderer.startConnectorIndex = connectionLine.startOutputIndex;
         lineRenderer.CancelAnimation();
     }
 
