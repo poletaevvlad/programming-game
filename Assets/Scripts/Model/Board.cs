@@ -39,9 +39,14 @@ public class Board {
     }
     public ConnectionLine SearchLine(Coord coord) {
         foreach (ConnectionLine t in _connections)
-            for(int i = 0; i < t.intermediatePoints.Length; i++)
-                if (t.intermediatePoints[i] == coord)
-                    return t;
+            for(int i = 0; i < t.intermediatePoints.Length-1; i++)
+                if((
+                    (t.intermediatePoints[i].x <= coord.x && t.intermediatePoints[i+1].x >= coord.x) ||
+                    (t.intermediatePoints[i].x >= coord.x && t.intermediatePoints[i + 1].x <= coord.x)
+                    ) && (
+                    (t.intermediatePoints[i].y <= coord.y && t.intermediatePoints[i + 1].y >= coord.y) ||
+                    (t.intermediatePoints[i].y >= coord.y && t.intermediatePoints[i + 1].y <= coord.y)
+                    )) return t;
         throw new ArgumentException("Линия не найдена");
     }
     //Думаю это не надо уже
