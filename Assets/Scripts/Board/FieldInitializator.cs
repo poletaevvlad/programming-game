@@ -6,6 +6,7 @@ public class FieldInitializator : MonoBehaviour {
 
     private BoardModel model = null;
     public Transform componentPrefab;
+    public Transform connectionPrefab;
 
     public void InitializeBoard() {
         if (model == null) {
@@ -27,6 +28,11 @@ public class FieldInitializator : MonoBehaviour {
         foreach (Component component in model.board._components) {
             AddComponent(component);
         }
+
+        // Adding connection lines
+        foreach (ConnectionLine line in model.board._connections) {
+            AddConnectionLine(line);
+        }
     }
 
     private void AddComponent(Component component){
@@ -35,6 +41,15 @@ public class FieldInitializator : MonoBehaviour {
         ComponentGenerator generator = newTransform.GetComponent<ComponentGenerator>();
         generator.Position();
         generator.Generate();
+    }
+
+    private void AddConnectionLine(ConnectionLine connectionLine){
+        Transform newTransform = Instantiate(connectionPrefab, transform);
+        ConnectionLineRenderer lineRenderer = newTransform.GetComponent<ConnectionLineRenderer>();
+        foreach (Coord coord in connectionLine.intermediatePoints) {
+            lineRenderer.Append(coord);
+        }
+        lineRenderer.CancelAnimation();
     }
 
 }

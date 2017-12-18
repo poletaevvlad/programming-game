@@ -5,7 +5,7 @@ using System;
 [RequireComponent(typeof(MeshRenderer))]
 [ExecuteInEditMode]
 public class ConnectionLineRenderer : MonoBehaviour {
-
+    
     public List<Coord> coordinates;
     private int length;
 
@@ -100,6 +100,11 @@ public class ConnectionLineRenderer : MonoBehaviour {
         } else {
             GetComponent<MeshFilter>().mesh = null;
         }
+    }
+
+    public void CancelAnimation(){
+        skipEndDist = targetSkipEndDist;
+        skipStartDist = targetSkipStartDist;
     }
 
     public void Append(int x, int y){
