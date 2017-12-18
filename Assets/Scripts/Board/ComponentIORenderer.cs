@@ -14,7 +14,7 @@ public class ComponentIORenderer : MonoBehaviour {
     }
 
     public bool isInput;
-
+    public Connector connector;
     public float radius = 0.2f;
 
     private void Update() {

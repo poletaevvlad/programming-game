@@ -66,9 +66,11 @@ public class ComponentGenerator : MonoBehaviour {
         }
     }
 
-    private void InstantiateCircle(int r, int c, ConnectorDirection direction, bool isInput){
+    private void InstantiateCircle(int r, int c, ConnectorDirection direction, bool isInput, Connector connector){
         Transform newObject = Instantiate(parameters.circlePrefab, transform);
-        newObject.GetComponent<ComponentIORenderer>().isInput = isInput;
+        ComponentIORenderer renderer = newObject.GetComponent<ComponentIORenderer>();
+        renderer.isInput = isInput;
+        renderer.connector = connector;
         float xOffset = !(direction == ConnectorDirection.Left || direction == ConnectorDirection.Right) ? 0 : (1 - (componentType.width % 2)) * 1f / 64f;
         float yOffset = !(direction == ConnectorDirection.Left || direction == ConnectorDirection.Right) ? (1 - (componentType.height % 2)) * 1f / 64f : 0;
         newObject.localPosition = parameters.GetCirclePosition(direction) + new Vector3(c - componentType.width / 2f + xOffset + 0.5f, -r + componentType.height / 2f + yOffset - 0.5f);
@@ -90,11 +92,11 @@ public class ComponentGenerator : MonoBehaviour {
     [ContextMenu("Generate content")]
     public void Generate() {
         foreach (Connector input in componentType.inputs) {
-            InstantiateCircle(input.y, input.x, input.direction, true);
+            InstantiateCircle(input.y, input.x, input.direction, true, input);
         }
 
         foreach (Connector output in componentType.outputs) {
-            InstantiateCircle(output.y, output.x, output.direction, false);
+            InstantiateCircle(output.y, output.x, output.direction, false, output);
         }
 
         label.text = componentType.label;

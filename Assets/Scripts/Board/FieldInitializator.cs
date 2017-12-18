@@ -52,4 +52,8 @@ public class FieldInitializator : MonoBehaviour {
         lineRenderer.CancelAnimation();
     }
 
+    public void Start() {
+        InitializeBoard();
+    }
+
 }

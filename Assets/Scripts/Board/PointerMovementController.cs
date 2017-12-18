@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 
 [RequireComponent(typeof(BoardModel))]
 public class PointerMovementController : MonoBehaviour {
@@ -11,6 +12,7 @@ public class PointerMovementController : MonoBehaviour {
 
     public Camera raycastCamera = null;
     private Transform previousHover = null;
+
     private ComponentIORenderer outputIORenderer = null;
     private ConnectionLineRenderer connectionLine = null;
 
@@ -38,6 +40,9 @@ public class PointerMovementController : MonoBehaviour {
         }
     }
 
+    private int lineStartComponentId;
+    private int lineStartConnectorIndex;
+
     private void HandleHovering(Ray screenRay) {
         Transform newHover = null;
         RaycastHit hit;
@@ -63,12 +68,44 @@ public class PointerMovementController : MonoBehaviour {
                 state = State.DrawingConnection;
 
                 connectionLine = Instantiate(connectionLinePrefab, transform);
-                UnityEditor.Selection.activeObject = connectionLine;
                 Component component = outputIORenderer.transform.parent.GetComponent<ComponentModel>().component;
-                connectionLine.Append(component.coord);
+                lineStartComponentId = component.id;
+
+                Connector connector = outputIORenderer.connector;
+                lineStartConnectorIndex = Array.IndexOf(ComponentType.GetComponentType(component.type).outputs, connector);
+                connectionLine.Append(new Coord(CurrentX, CurrentY));
+                switch (connector.direction) {
+                    case ConnectorDirection.Left:
+                        possibleNextMove = new Coord(CurrentX - 1, CurrentY);
+                        break;
+                    case ConnectorDirection.Right:
+                        possibleNextMove = new Coord(CurrentX + 1, CurrentY);
+                        break;
+                    case ConnectorDirection.Up:
+                        possibleNextMove = new Coord(CurrentX, CurrentY - 1);
+                        break;
+                    case ConnectorDirection.Down:
+                        possibleNextMove = new Coord(CurrentX, CurrentY + 1);
+                        break;
+                }
             }
         }
     }
+
+    private int GetComponentInputIndex(ComponentTypeIndex typeIndex, int x, int y, ConnectorDirection direction){
+        ComponentType type = ComponentType.GetComponentType(typeIndex);
+        for (int i = 0; i < type.inputs.Length; i++) {
+            Connector connector = type.inputs[i];
+            if(connector.x == x && connector.y == y && connector.direction == direction) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private Coord? possibleNextMove = null;
+    private int lineEndComponentId = -1;
+    private int lineEndConnectorIndex = -1;
 
     private void HandleDrawingConnection(Ray screenRay) {
         Coord lastCell = connectionLine.GetLast();
@@ -79,7 +116,39 @@ public class PointerMovementController : MonoBehaviour {
                 else if (x > CurrentX) x--;
                 else if (y < CurrentY) y++;
                 else if (y > CurrentY) y--;
-                connectionLine.Append(x, y);
+                if (possibleNextMove != null && (possibleNextMove.Value.x != x || possibleNextMove.Value.y != y)) {
+                    break;
+                }
+                possibleNextMove = null;
+                lineEndComponentId = lineEndConnectorIndex = -1;
+                try {
+                    Component component = model.board.SearchComponent(new Coord(x, y));
+                    if (component.id == lineStartComponentId) break;
+                    int connectorX = x - component.coord.x;
+                    int connectorY = y - component.coord.y;
+                    ConnectorDirection direction;
+                    Coord last = connectionLine.GetLast();
+                    if (last.x < x) direction = ConnectorDirection.Left;
+                    else if (last.x > x) direction = ConnectorDirection.Right;
+                    else if (last.y < y) direction = ConnectorDirection.Up;
+                    else direction = ConnectorDirection.Down;
+                    int connectorId = GetComponentInputIndex(component.type, connectorX, connectorY, direction);
+                    if (connectorId == -1) {
+                        break;
+                    } else {
+                        connectionLine.Append(x, y);
+                        possibleNextMove = last;
+                        lineEndComponentId = component.id;
+                        lineEndConnectorIndex = connectorId;
+                    }
+                } catch {
+                    try {
+                        model.board.SearchLine(new Coord(x, y));
+                        break;
+                    } catch (ArgumentException) {
+                        connectionLine.Append(x, y);
+                    }
+                }
             }   
         }
 
@@ -90,7 +159,22 @@ public class PointerMovementController : MonoBehaviour {
             }
             outputIORenderer.Released();
             state = State.Normal;
-            Destroy(connectionLine.gameObject);
+            possibleNextMove = null;
+
+            if (lineEndComponentId >= 0 && lineEndConnectorIndex >= 0) {
+                ConnectionLine line = new ConnectionLine();
+                line.startComponentId = lineStartComponentId;
+                line.startOutputIndex = lineStartConnectorIndex;
+                line.endComponentId = lineEndComponentId;
+                line.endOutputIndex = lineEndConnectorIndex;
+                line.intermediatePoints = new Coord[connectionLine.coordinates.Count];
+                for (int i = 0; i < connectionLine.coordinates.Count; i++) {
+                    line.intermediatePoints[i] = connectionLine.coordinates[i];
+                }
+                model.board.Add(line);
+            } else {
+                Destroy(connectionLine.gameObject);
+            }
         }
     }
 
