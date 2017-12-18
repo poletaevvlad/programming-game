@@ -28,7 +28,6 @@ public class ComponentType {
                         new Connector(){x = 0, y = 0, direction = ConnectorDirection.Right }
                     }
                 };
-                break;
             case ComponentTypeIndex.Negative:
                 return new ComponentType() {
                     label = "-",

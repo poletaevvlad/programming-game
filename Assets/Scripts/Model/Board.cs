@@ -36,6 +36,7 @@ public class Board {
 	}
 
 	public void AddComponent(Component component){
+        component.id = _components.Count;
         _components.Add(component);
     }
     public void DeleteComponent(Component component) {
@@ -53,10 +54,14 @@ public class Board {
         }
         throw new ArgumentException("Компонент не найден");
     }
+    public void Add(ConnectionLine connectionLine) {
+        _connections.Add(connectionLine);
+    }
     public ConnectionLine SearchLine(Coord coord) {
         foreach (ConnectionLine t in _connections)
-            if (t.intermediatePoints == coord)
-                return t;
+            for(int i = 0; i < t.intermediatePoints.Length; i++)
+                if (t.intermediatePoints[i] == coord)
+                    return t;
         throw new ArgumentException("Линия не найдена");
     }
     //Думаю это не надо уже
