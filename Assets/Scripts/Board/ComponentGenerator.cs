@@ -1,12 +1,12 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(ComponentModel))]
 public class ComponentGenerator : MonoBehaviour {
     public IOBuilderParameters parameters;
 
     private BoardResizer boardResizer = null;
+    public Text label;
 
     private Component _component = null;
     private Component component {
@@ -95,6 +95,7 @@ public class ComponentGenerator : MonoBehaviour {
         foreach (Connector output in componentType.outputs) {
             InstantiateCircle(output.y, output.x, output.direction, false);
         }
+        label.text = componentType.label;
     }
 
 }

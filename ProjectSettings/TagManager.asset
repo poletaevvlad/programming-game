@@ -41,3 +41,6 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: ComponentsCanvas
+    uniqueID: 2008814701
+    locked: 0
