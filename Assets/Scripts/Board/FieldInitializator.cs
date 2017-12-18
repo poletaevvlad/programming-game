@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Linq;
 using UnityEngine;
 
 [RequireComponent(typeof(BoardModel))]
@@ -12,17 +11,22 @@ public class FieldInitializator : MonoBehaviour {
         if (model == null) {
             model = GetComponent<BoardModel>();
         }
+        
+        // Clearing field hierarchy
+        foreach (Transform child in transform.Cast<Transform>().ToArray()) {
+            if (child.name != "Board") {
+                if (Application.isPlaying) {
+                    Destroy(child.gameObject);
+                } else {
+                    DestroyImmediate(child.gameObject);
+                }
+            }
+        }
 
-        // TODO: Use components from the model when implemented
-        AddComponent(new Component() {
-            type = ComponentTypeIndex.Addition,
-            coord = new Coord() { x = 5, y = 3 }
-        });
-
-        AddComponent(new Component() {
-            type = ComponentTypeIndex.Addition,
-            coord = new Coord() { x = 9, y = 5 }
-        });
+        // Adding components
+        foreach (Component component in model.board._components) {
+            AddComponent(component);
+        }
     }
 
     private void AddComponent(Component component){

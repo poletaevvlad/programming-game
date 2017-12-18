@@ -17,17 +17,9 @@ public class BoardModelEditor : Editor {
 			
 		DrawDefaultInspector ();
 
-		if (model.board != null) {
-			GUILayout.BeginHorizontal ();
-			GUILayout.Label ("w:");
-			width = EditorGUILayout.IntField (width);
-			GUILayout.Label ("h:");
-			height = EditorGUILayout.IntField (height);
-			if (GUILayout.Button ("Resize")) {
-				model.Resize (width, height);
-			}
-			GUILayout.EndHorizontal ();
-		}
+		if (GUILayout.Button("Rebuild")) {
+            model.Rebuild();
+        }
 	}
 		
 

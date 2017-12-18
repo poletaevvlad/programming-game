@@ -70,7 +70,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1800373805902190}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1.302, y: 0.059, z: -1}
+  m_LocalPosition: {x: -2.8156586, y: -1.1565847, z: -1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 224429356408972748}
@@ -106,6 +106,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   parameters: {fileID: 11400000, guid: 79761f8081c46314ebeb5a2d55453ead, type: 2}
   label: {fileID: 114710185922659818}
+  canvas: {fileID: 223374120321543582}
 --- !u!114 &114710185922659818
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -150,6 +151,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae6bb34873ff865429b063736213158a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  component:
+    id: 0
+    coord:
+      x: 2
+      y: 3
+    type: 0
 --- !u!212 &212079886516555694
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -244,7 +251,7 @@ RectTransform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1121648261673834}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 224429356408972748}

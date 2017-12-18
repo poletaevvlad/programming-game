@@ -7,6 +7,7 @@ public class ComponentGenerator : MonoBehaviour {
 
     private BoardResizer boardResizer = null;
     public Text label;
+    public Canvas canvas;
 
     private Component _component = null;
     private Component component {
@@ -95,7 +96,10 @@ public class ComponentGenerator : MonoBehaviour {
         foreach (Connector output in componentType.outputs) {
             InstantiateCircle(output.y, output.x, output.direction, false);
         }
+
         label.text = componentType.label;
+        canvas.GetComponent<RectTransform>().sizeDelta = new Vector2(32 * componentType.width, 32 * componentType.height);
+        canvas.transform.localPosition = new Vector3(componentType.width % 2 == 0 ? 1f/64f : 0, componentType.height % 2 == 0 ? 1f / 64f : 0, 1);
     }
 
 }
