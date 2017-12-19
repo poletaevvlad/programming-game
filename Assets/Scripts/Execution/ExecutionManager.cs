@@ -15,6 +15,9 @@ public class ExecutionManager : MonoBehaviour {
     public ExecutionValue executionValuePrefab;
     public Transform executionValueParent;
 
+    public UnityEvent onProgramStarted;
+    public UnityEvent onprogramTerminated;
+
     public int time;
     public bool isRunning { get; private set; }
     private Dictionary<int, float> inputs = new Dictionary<int, float>();
@@ -112,6 +115,7 @@ public class ExecutionManager : MonoBehaviour {
             foreach (Component component in boardModel.board._components) {
                 inOut[component.id] = new InputOutput(ComponentType.GetComponentType(component.type));
             }
+            onProgramStarted.Invoke();
         }
 
         foreach (InputOutput io in inOut.Values) io.Reset();
@@ -151,6 +155,7 @@ public class ExecutionManager : MonoBehaviour {
         connections = null;
         inOut = null;
         onTimeChanged.Invoke(time);
+        onprogramTerminated.Invoke();
         isRunning = false;
     }
 
