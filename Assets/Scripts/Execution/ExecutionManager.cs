@@ -1,12 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+
+[Serializable]
+public class TimeChangeEvent: UnityEvent<int> { }
 
 public class ExecutionManager : MonoBehaviour {
 
     public Level level;
-
-    public UnityEvent TimeChanged;
+    public TimeChangeEvent onTimeChanged;
 
     public int time;
 
@@ -30,7 +33,7 @@ public class ExecutionManager : MonoBehaviour {
     [ContextMenu("Step")]
     public void ComputeSpep(){
         time++;
-        TimeChanged.Invoke();
+        onTimeChanged.Invoke(time);
     }
 
 }
