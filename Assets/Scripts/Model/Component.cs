@@ -11,8 +11,12 @@ public enum ComponentTypeIndex{
     Conditional,
     Value,
     Increment,
-    Decrement
+    Decrement,
+
+    Input,
+    Output
 }
+
 [System.Serializable]
 public class Component {
     public int id;

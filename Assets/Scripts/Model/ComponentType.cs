@@ -127,6 +127,26 @@ public class ComponentType {
                         new Connector(){x = 0, y = 0, direction = ConnectorDirection.Right }
                     }
                 };
+            case ComponentTypeIndex.Input:
+                return new ComponentType() {
+                    label = "in",
+                    width = 1,
+                    height = 1,
+                    inputs = new Connector[0],
+                    outputs = new Connector[] {
+                        new Connector(){x = 0, y = 0, direction = ConnectorDirection.Right }
+                    }
+                };
+            case ComponentTypeIndex.Output:
+                return new ComponentType() {
+                    label = "out",
+                    width = 1,
+                    height = 1,
+                    inputs = new Connector[] {
+                        new Connector(){ x = 0, y = 0, direction = ConnectorDirection.Left }
+                    },
+                    outputs = new Connector[0]
+                };
             //Этой строчкой я просто затыкаю возмущения что не все ветве возвращают значчение
             //Просто это строчка не имеет значения, ведь теоретически 
             //там всеггда будут в эту функцую поступать только индексы, к которым есть компоненты
