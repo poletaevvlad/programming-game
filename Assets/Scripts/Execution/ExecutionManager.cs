@@ -71,7 +71,7 @@ public class ExecutionManager : MonoBehaviour {
     private Dictionary<int, InputOutput> inOut;
 
     [ContextMenu("Step")]
-    public void ComputeSpep(){
+    public void ComputeStep(){
         if (connections == null) {
             connections = new Connection[boardModel.board._connections.Count];
             for (int i = 0; i < connections.Length; i++) {
@@ -95,9 +95,7 @@ public class ExecutionManager : MonoBehaviour {
         }
 
         foreach(InputOutput io in inOut.Values) {
-            for (int i = 0; i < io.outputs.Length; i++) {
-                io.outputs[i] = i;
-            }
+            io.type.compute(io.inputs, io.outputs, this);
         }
 
         foreach (Connection connection in connections) {
