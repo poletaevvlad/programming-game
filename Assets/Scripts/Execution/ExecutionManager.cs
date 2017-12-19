@@ -70,7 +70,6 @@ public class ExecutionManager : MonoBehaviour {
     private Connection[] connections;
     private Dictionary<int, InputOutput> inOut;
 
-    [ContextMenu("Step")]
     public void ComputeStep(){
         if (connections == null) {
             connections = new Connection[boardModel.board._connections.Count];
@@ -108,6 +107,18 @@ public class ExecutionManager : MonoBehaviour {
         }
 
         time++;
+        onTimeChanged.Invoke(time);
+    }
+
+    public void Break() {
+        time = 0;
+        foreach(Connection connection in connections) {
+            if (connection.graphic != null) {
+                connection.graphic.Disappear();
+            }
+        }
+        connections = null;
+        inOut = null;
         onTimeChanged.Invoke(time);
     }
 
