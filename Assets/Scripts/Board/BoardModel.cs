@@ -13,4 +13,15 @@ public class BoardModel : MonoBehaviour {
     public void Rebuild() {
         rebuildRequiredEvent.Invoke();
     }
+
+    public ConnectionLineRenderer FindLineRenderer(ConnectionLine line){
+        foreach(Transform child in transform) {
+            ConnectionLineRenderer lineRenderer = child.GetComponent<ConnectionLineRenderer>();
+            if (lineRenderer != null && lineRenderer.startComponentId == line.startComponentId && 
+                lineRenderer.startConnectorIndex == line.startOutputIndex) {
+                return lineRenderer;
+            }
+        }
+        return null;
+    }
 }

@@ -11,4 +11,8 @@ public class CurrentStepIndicator : MonoBehaviour {
         transform.localPosition = new Vector3(time * step + firstOffset, transform.localPosition.y, transform.localPosition.z);
     }
 
+    public void Start(){
+        UpdatePosition(0);
+    }
+
 }

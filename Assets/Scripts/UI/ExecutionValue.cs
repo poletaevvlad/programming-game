@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 
 [ExecuteInEditMode]
-class ExecutionValue : MonoBehaviour{
+public class ExecutionValue : MonoBehaviour{
 
     public ConnectionLineRenderer lineRenderer;
     public float position;
@@ -46,7 +46,7 @@ class ExecutionValue : MonoBehaviour{
     }
 
     public void AnimationEnded(){
-        Debug.Log("Should destroy");
+        Destroy(gameObject);
     }
 
 }

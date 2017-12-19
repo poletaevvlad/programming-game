@@ -72,11 +72,12 @@ public class PointerMovementController : MonoBehaviour {
                 Component component = outputIORenderer.transform.parent.GetComponent<ComponentModel>().component;
                 connectionLine.startComponentId = lineStartComponentId = component.id;
 
-                Connector connector = outputIORenderer.connector;
-                connectionLine.startConnectorIndex = lineStartConnectorIndex = Array.IndexOf(ComponentType.GetComponentType(component.type).outputs, connector);
+                connectionLine.startConnectorIndex = lineStartConnectorIndex = 
+                    Array.IndexOf(ComponentType.GetComponentType(component.type).outputs, outputIORenderer.connector);
                 connectionLine.Append(new Coord(CurrentX, CurrentY));
                 RemoveConnection(component.id, lineStartConnectorIndex);
-                switch (connector.direction) {
+                Debug.Log(outputIORenderer.connector);
+                switch (outputIORenderer.connector.direction) {
                     case ConnectorDirection.Left:
                         possibleNextMove = new Coord(CurrentX - 1, CurrentY);
                         break;

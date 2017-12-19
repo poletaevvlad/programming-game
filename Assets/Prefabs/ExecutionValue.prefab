@@ -176,7 +176,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lineRenderer: {fileID: 0}
   position: 0.75
-  text: {fileID: 0}
+  text: {fileID: 114712748337783170}
 --- !u!222 &222631400290976670
 CanvasRenderer:
   m_ObjectHideFlags: 1
