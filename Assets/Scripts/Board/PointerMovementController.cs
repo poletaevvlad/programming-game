@@ -10,6 +10,7 @@ public class PointerMovementController : MonoBehaviour {
     }
 
     private State state = State.Normal;
+    public ExecutionManager executionManager;
 
     public Camera raycastCamera = null;
     private Transform previousHover = null;
@@ -30,6 +31,9 @@ public class PointerMovementController : MonoBehaviour {
     void Update () {
         Ray ray = raycastCamera.ScreenPointToRay(Input.mousePosition);
         UpdatePoint(ray.origin);
+        if (executionManager.isRunning) {
+            return;
+        }
 
         switch (state) {
             case State.Normal:

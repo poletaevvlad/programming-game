@@ -16,7 +16,7 @@ public class ExecutionManager : MonoBehaviour {
     public Transform executionValueParent;
 
     public int time;
-
+    public bool isRunning { get; private set; }
     private Dictionary<int, float> inputs = new Dictionary<int, float>();
 
     public class OutputData {
@@ -101,6 +101,7 @@ public class ExecutionManager : MonoBehaviour {
     private Dictionary<int, InputOutput> inOut;
 
     public void ComputeStep(){
+        isRunning = true;
         if (connections == null) {
             connections = new Connection[boardModel.board._connections.Count];
             for (int i = 0; i < connections.Length; i++) {
@@ -150,6 +151,7 @@ public class ExecutionManager : MonoBehaviour {
         connections = null;
         inOut = null;
         onTimeChanged.Invoke(time);
+        isRunning = false;
     }
 
 }
