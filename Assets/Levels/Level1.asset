@@ -30,4 +30,9 @@ MonoBehaviour:
     value: 7
   - time: 16
     value: 8
-  output: []
+  output:
+  - 1
+  - 3
+  - 9
+  - 27
+  - 81

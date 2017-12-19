@@ -206,7 +206,11 @@ public class ComponentType {
                         new Connector(){ x = 0, y = 0, direction = ConnectorDirection.Left }
                     },
                     outputs = new Connector[0],
-                    compute = delegate (float?[] input, float?[] output, ExecutionManager executionManager) { }
+                    compute = delegate (float?[] input, float?[] output, ExecutionManager executionManager) {
+                        if (input[0] != null) {
+                            executionManager.RegisterOutput(input[0].Value);
+                        }
+                    }
                 };
             //Этой строчкой я просто затыкаю возмущения что не все ветве возвращают значчение
             //Просто это строчка не имеет значения, ведь теоретически 

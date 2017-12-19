@@ -18,7 +18,12 @@ public class ExecutionManager : MonoBehaviour {
     public int time;
 
     private Dictionary<int, float> inputs = new Dictionary<int, float>();
-    private Dictionary<int, float> outputs = new Dictionary<int, float>();
+
+    public class OutputData {
+        public float provided;
+        public float? expected;
+    }
+    private Dictionary<int, OutputData> outputs = new Dictionary<int, OutputData>();
 
     public void Start() {
         foreach (Level.InputItem inputItem in level.input) {
@@ -32,6 +37,31 @@ public class ExecutionManager : MonoBehaviour {
         } else {
             return null;
         }
+    }
+
+    public float? GetOutput(int time, bool expected, out bool isReal, out bool isValid){
+        isReal = true;
+        isValid = false;
+        if (time < this.time) {
+            if (outputs.ContainsKey(time)) {
+                isValid = outputs[time].expected != null && Mathf.Abs(outputs[time].expected.Value - outputs[time].provided) < 1e-5;
+                return expected ? outputs[time].expected : outputs[time].provided;
+            }
+        } else if (expected) {
+            isReal = false;
+            int index = time - this.time + outputs.Count;
+            if (index < level.output.Length) {
+                return level.output[index];
+            }
+        }
+        return null;
+    }
+
+    public void RegisterOutput(float value){
+        OutputData od = new OutputData();
+        od.provided = value;
+        od.expected = outputs.Count >= level.output.Length ? (float?)null : level.output[outputs.Count];
+        outputs[time] = od;
     }
 
     private class Connection{

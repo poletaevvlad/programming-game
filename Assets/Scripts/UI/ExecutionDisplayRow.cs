@@ -73,6 +73,17 @@ public class ExecutionDisplayRow : MonoBehaviour {
             items.AddFirst(newObject);
             if (firstIndex < -50) return;
         }
+    }
 
+    public void Rebuild(){
+        while (items.Count > 0) {
+            Destroy(items.First.Value.gameObject);
+            items.RemoveFirst();
+        }
+        for (int index = firstIndex; index <= lastIndex; index++) {
+            RectTransform newObject = factory.CreateElement(index, transform);
+            newObject.localPosition = new Vector3(firstOffset + step * index, yOffset);
+            items.AddFirst(newObject);
+        }
     }
 }
