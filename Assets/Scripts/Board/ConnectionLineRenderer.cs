@@ -31,7 +31,7 @@ public class ConnectionLineRenderer : MonoBehaviour {
         }
     }
 
-    private Vector3 CoordToVec3(Coord coord){
+    public Vector3 CoordToVec3(Coord coord){
         return new Vector3(boardResizer.GetLeft(coord.x) + boardResizer.CellWidth / 2,
                            boardResizer.GetTop(coord.y) - boardResizer.CellHeight / 2);
     }
@@ -177,7 +177,7 @@ public class ConnectionLineRenderer : MonoBehaviour {
         if (skipEndDist < 0) skipEndDist = 0;
     }
 
-    private static int ManhattanDistance(Coord a, Coord b){
+    public static int ManhattanDistance(Coord a, Coord b){
         return Mathf.Abs(a.x - b.x) + Mathf.Abs(a.y - b.y);
     }
 
