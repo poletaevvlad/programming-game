@@ -17,10 +17,16 @@ public class ExecutionManager : MonoBehaviour {
 
     public UnityEvent onProgramStarted;
     public UnityEvent onprogramTerminated;
+    public UnityEvent onAnimationStarted;
+    public UnityEvent onAnimationEnded;
+    public UnityEvent onRunnignStarted;
+    public UnityEvent onRunningEnded;
 
     public int time;
     public bool isRunning { get; private set; }
     private Dictionary<int, float> inputs = new Dictionary<int, float>();
+
+    public float animationTime;
 
     public class OutputData {
         public float provided;
@@ -132,13 +138,20 @@ public class ExecutionManager : MonoBehaviour {
             io.type.compute(io.inputs, io.outputs, this);
         }
 
+        bool anyAnimation = false;
         foreach (Connection connection in connections) {
             connection.value = inOut[connection.connectionLine.startComponentId].outputs[connection.connectionLine.startOutputIndex];
             if (connection.value != null){
                 connection.graphic = Instantiate(executionValuePrefab, executionValueParent);
                 connection.graphic.Initialize(connection.value.Value, connection.connectionLineRenderer);
                 connection.graphic.Appear();
+                anyAnimation = true;
             }
+        }
+        if (anyAnimation) {
+            animationLeftTime = animationTime;
+            waitingAnimationOver = true;
+            onAnimationStarted.Invoke();
         }
 
         time++;
@@ -157,6 +170,48 @@ public class ExecutionManager : MonoBehaviour {
         onTimeChanged.Invoke(time);
         onprogramTerminated.Invoke();
         isRunning = false;
+        if (runningAutomatic) {
+            onRunningEnded.Invoke();
+            runningAutomatic = false;
+        }
+    }
+
+    private bool waitingAnimationOver;
+    private float animationLeftTime;
+
+    private bool runningAutomatic;
+    private float automaticLeftTime;
+    public float automaticRunningTime;
+
+    public void Update(){
+        if (waitingAnimationOver) {
+            animationLeftTime -= Time.deltaTime;
+            if (animationLeftTime < 0) {
+                waitingAnimationOver = false;
+                onAnimationEnded.Invoke();
+            }
+        }
+        if (runningAutomatic) {
+            automaticLeftTime -= Time.deltaTime;
+            if (automaticLeftTime < 0) {
+                automaticLeftTime = automaticRunningTime;
+                ComputeStep();
+            }
+        }
+    }
+
+    public void RunAutomatic() {
+        automaticLeftTime = automaticRunningTime;
+        runningAutomatic = true;
+        onRunnignStarted.Invoke();
+        ComputeStep();
+    }
+
+    public void PauseAutomatic() {
+        if (runningAutomatic) { 
+            runningAutomatic = false;
+            onRunningEnded.Invoke();
+        }
     }
 
 }
