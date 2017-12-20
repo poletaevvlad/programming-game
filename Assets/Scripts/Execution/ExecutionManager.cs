@@ -169,6 +169,7 @@ public class ExecutionManager : MonoBehaviour {
         inOut = null;
         onTimeChanged.Invoke(time);
         onprogramTerminated.Invoke();
+        outputs.Clear();
         isRunning = false;
         if (runningAutomatic) {
             onRunningEnded.Invoke();
