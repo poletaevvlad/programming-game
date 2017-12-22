@@ -89,6 +89,7 @@ public class ExecutionManager : MonoBehaviour {
         public float?[] inputs;
         public float?[] outputs;
         public ComponentType type;
+        public Component component;
 
         public InputOutput(ComponentType componentType){
             type = componentType;
@@ -120,6 +121,8 @@ public class ExecutionManager : MonoBehaviour {
             inOut = new Dictionary<int, InputOutput>(boardModel.board._components.Count);
             foreach (Component component in boardModel.board._components) {
                 inOut[component.id] = new InputOutput(ComponentType.GetComponentType(component.type));
+                inOut[component.id].component = component;
+                inOut[component.id].component.parameterOpt = null;
             }
             onProgramStarted.Invoke();
         }
@@ -135,7 +138,7 @@ public class ExecutionManager : MonoBehaviour {
         }
 
         foreach(InputOutput io in inOut.Values) {
-            io.type.compute(io.inputs, io.outputs, this);
+            io.type.compute(io.inputs, io.outputs, this, ref io.component.parameterOpt, io.component.parmater);
         }
 
         bool anyAnimation = false;

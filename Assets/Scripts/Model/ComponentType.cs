@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class ComponentType {
 
-    public delegate void ComponentComputationDelegate(float?[] input, float?[] output, ExecutionManager executionManager);
+    public delegate void ComponentComputationDelegate(float?[] input, float?[] output, ExecutionManager executionManager, ref float? param, float param2);
 
 	public int width { get; set;}
 	public int height { get; set;}
@@ -31,7 +31,7 @@ public class ComponentType {
                     outputs = new Connector[1] {
                         new Connector(){x = 0, y = 0, direction = ConnectorDirection.Right }
                     },
-                    compute = delegate(float?[] input, float?[] output, ExecutionManager executionManager) {
+                    compute = delegate(float?[] input, float?[] output, ExecutionManager executionManager, ref float? param, float param2) {
                         float sum = 0;
                         bool hasInputs = false;
                         for (int i = 0; i < 3; i++) {
@@ -56,7 +56,7 @@ public class ComponentType {
                     outputs = new Connector[1] {
                         new Connector(){x = 0, y = 0, direction = ConnectorDirection.Right }
                     },
-                    compute = delegate(float?[] input, float?[] output, ExecutionManager executionManager) {
+                    compute = delegate(float?[] input, float?[] output, ExecutionManager executionManager, ref float? param, float param2) {
                         if (input[0] != null) output[0] = -input[0].Value;
                     }
                 };
@@ -73,7 +73,7 @@ public class ComponentType {
                     outputs = new Connector[1] {
                         new Connector(){x = 0, y = 0, direction = ConnectorDirection.Right }
                     },
-                    compute = delegate (float?[] input, float?[] output, ExecutionManager executionManager) {
+                    compute = delegate (float?[] input, float?[] output, ExecutionManager executionManager, ref float? param, float param2) {
                         float product = 1;
                         bool hasInputs = false;
                         for (int i = 0; i < 3; i++) {
@@ -98,22 +98,30 @@ public class ComponentType {
                     outputs = new Connector[1] {
                         new Connector(){x = 0, y = 0, direction = ConnectorDirection.Right }
                     },
-                    compute = delegate (float?[] input, float?[] output, ExecutionManager executionManager) {
+                    compute = delegate (float?[] input, float?[] output, ExecutionManager executionManager, ref float? param, float param2) {
                         if (input[0] != null) output[0] = 1 / input[0].Value;
                     }
                 };
             case ComponentTypeIndex.Memory:
                 return new ComponentType() {
                     label = "mem",
-                    width = 1,
+                    width = 2,
                     height = 1,
-                    inputs = new Connector[1] {
-                        new Connector(){x = 0, y = 0, direction = ConnectorDirection.Left }
+                    inputs = new Connector[] {
+                        new Connector(){x = 0, y = 0, direction = ConnectorDirection.Left },
+                        new Connector(){x = 0, y = 0, direction = ConnectorDirection.Down }
                     },
                     outputs = new Connector[1] {
-                        new Connector(){x = 0, y = 0, direction = ConnectorDirection.Right }
+                        new Connector(){x = 1, y = 0, direction = ConnectorDirection.Right }
                     },
-                    compute = delegate (float?[] input, float?[] output, ExecutionManager executionManager) {}
+                    compute = delegate (float?[] input, float?[] output, ExecutionManager executionManager, ref float? param, float param2) {
+                        if (input[1] != null) {
+                            param = null;
+                        }else if (input[0] != null) {
+                            param = input[0];
+                        }
+                        output[0] = param;
+                    }
                 };
             case ComponentTypeIndex.Conditional:
                 return new ComponentType() {
@@ -129,7 +137,7 @@ public class ComponentType {
                         new Connector(){x = 0, y = 0, direction = ConnectorDirection.Right },
                         new Connector(){x = 0, y = 1, direction = ConnectorDirection.Right }
                     },
-                    compute = delegate (float?[] input, float?[] output, ExecutionManager executionManager) {
+                    compute = delegate (float?[] input, float?[] output, ExecutionManager executionManager, ref float? param, float param2) {
                         if (input[0] != null) {
                             if (Mathf.Abs(input[0].Value) > 1e-5) {
                                 output[0] = input[1];
@@ -148,7 +156,9 @@ public class ComponentType {
                     outputs = new Connector[1] {
                         new Connector(){x = 0, y = 0, direction = ConnectorDirection.Right }
                     },
-                    compute = delegate (float?[] input, float?[] output, ExecutionManager executionManager) { }
+                    compute = delegate (float?[] input, float?[] output, ExecutionManager executionManager, ref float? param, float param2) {
+                        output[0] = param2;
+                    }
                 };
             case ComponentTypeIndex.Increment:
                 return new ComponentType() {
@@ -161,7 +171,7 @@ public class ComponentType {
                     outputs = new Connector[1] {
                         new Connector(){x = 0, y = 0, direction = ConnectorDirection.Right }
                     },
-                    compute = delegate (float?[] input, float?[] output, ExecutionManager executionManager) {
+                    compute = delegate (float?[] input, float?[] output, ExecutionManager executionManager, ref float? param, float param2) {
                         if (input[0] != null) {
                             output[0] = input[0].Value + 1;
                         }
@@ -178,7 +188,7 @@ public class ComponentType {
                     outputs = new Connector[1] {
                         new Connector(){x = 0, y = 0, direction = ConnectorDirection.Right }
                     },
-                    compute = delegate (float?[] input, float?[] output, ExecutionManager executionManager) {
+                    compute = delegate (float?[] input, float?[] output, ExecutionManager executionManager, ref float? param, float param2) {
                         if (input[0] != null) {
                             output[0] = input[0].Value - 1;
                         }
@@ -193,7 +203,7 @@ public class ComponentType {
                     outputs = new Connector[] {
                         new Connector(){x = 0, y = 0, direction = ConnectorDirection.Right }
                     },
-                    compute = delegate (float?[] input, float?[] output, ExecutionManager executionManager) {
+                    compute = delegate (float?[] input, float?[] output, ExecutionManager executionManager, ref float? param, float param2) {
                         output[0] = executionManager.GetInput(executionManager.time);
                     }
                 };
@@ -206,10 +216,53 @@ public class ComponentType {
                         new Connector(){ x = 0, y = 0, direction = ConnectorDirection.Left }
                     },
                     outputs = new Connector[0],
-                    compute = delegate (float?[] input, float?[] output, ExecutionManager executionManager) {
+                    compute = delegate (float?[] input, float?[] output, ExecutionManager executionManager, ref float? param, float param2) {
                         if (input[0] != null) {
                             executionManager.RegisterOutput(input[0].Value);
                         }
+                    }
+                };
+            case ComponentTypeIndex.Dispencer:
+                return new ComponentType() {
+                    label = "dsp",
+                    width = 1,
+                    height = 1,
+                    inputs = new Connector[] {
+                        new Connector(){x = 0, y = 0, direction = ConnectorDirection.Left}
+                    },
+                    outputs = new Connector[] {
+                        new Connector(){x = 0, y = 0, direction = ConnectorDirection.Up},
+                        new Connector(){x = 0, y = 0, direction = ConnectorDirection.Down}
+                    },
+                    compute = delegate (float?[] input, float?[] output, ExecutionManager executionManager, ref float? param, float param2) {
+                        if (input[0] != null) {
+                            int numIteractions = Mathf.RoundToInt(param2);
+                            int currentNum = param == null ? 0 : Mathf.RoundToInt(param.Value);
+                            if (currentNum == 0) {
+                                output[0] = input[0];
+                            } else {
+                                output[1] = input[0];
+                            }
+                            currentNum = (currentNum + 1) % numIteractions;
+                            param = currentNum;
+                        }
+                    }
+                };
+            case ComponentTypeIndex.Duplication:
+                return new ComponentType() {
+                    label = "dpl",
+                    width = 1,
+                    height = 1,
+                    inputs = new Connector[] {
+                        new Connector(){x = 0, y = 0, direction = ConnectorDirection.Left}
+                    },
+                    outputs = new Connector[] {
+                        new Connector(){x = 0, y = 0, direction = ConnectorDirection.Up},
+                        new Connector(){x = 0, y = 0, direction = ConnectorDirection.Down},
+                        new Connector(){x = 0, y = 0, direction = ConnectorDirection.Right}
+                    },
+                    compute = delegate(float?[] input, float?[] output, ExecutionManager executionManager, ref float? param, float param2) {
+                        output[0] = output[1] = output[2] = input[0];
                     }
                 };
             //Этой строчкой я просто затыкаю возмущения что не все ветве возвращают значчение
