@@ -31,6 +31,7 @@ public class PointerMovementController : MonoBehaviour {
     private int lineStartConnectorIndex;
     public ComponentCreationMenu creationMenu;
     public FieldInitializator initializer;
+    public BoardResizer resizer;
 
     private void Start() {
         model = GetComponent<BoardModel>();
@@ -52,6 +53,9 @@ public class PointerMovementController : MonoBehaviour {
                 break;
             case State.DraggingComponent:
                 HandleDraggingComponent();
+                break;
+            case State.SelectingNewComponent:
+                HandleSelectingNewComponent();
                 break;
         }
     }
@@ -145,6 +149,22 @@ public class PointerMovementController : MonoBehaviour {
             }
         }
         if (Input.GetKeyUp(KeyCode.Mouse0)) {
+            state = State.Normal;
+        }
+    }
+
+    private void HandleSelectingNewComponent(){
+        bool shouldClose = false;
+        if (Input.GetKeyDown(KeyCode.Escape)) shouldClose = true;
+        if (Input.GetKeyDown(KeyCode.Mouse0)) {
+            Vector3 [] corners = new Vector3[4];
+            creationMenu.GetComponent<RectTransform>().GetWorldCorners(corners);
+            float left = corners[0].x, right = corners[2].x, bottom = corners[0].y, top = corners[1].y;
+            shouldClose = left >= Input.mousePosition.x || right <= Input.mousePosition.x || top <= Input.mousePosition.y || bottom >= Input.mousePosition.y;
+        }
+
+        if (shouldClose) {
+            creationMenu.Hide();
             state = State.Normal;
         }
     }

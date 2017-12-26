@@ -18,4 +18,8 @@ public class ComponentCreationMenu: MonoBehaviour{
         gameObject.SetActive(true);
     }
 
+    public void Hide(){
+        gameObject.SetActive(false);
+    }
+
 }
