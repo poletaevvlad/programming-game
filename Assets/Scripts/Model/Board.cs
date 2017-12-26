@@ -15,8 +15,19 @@ public class Board {
     [SerializeField]
     public int heigth;
 
+    private int minComponentId = -1;
+
     public void AddComponent(Component component) {
-        component.id = _components.Count;
+        if (minComponentId < 0) {
+            minComponentId = 0;
+            foreach(Component c in _components) {
+                if (c.id > minComponentId) {
+                    minComponentId = c.id;
+                }
+            }
+        }
+        minComponentId++;
+        component.id = minComponentId;
         _components.Add(component);
     }
     public void DeleteComponent(Component component) {
