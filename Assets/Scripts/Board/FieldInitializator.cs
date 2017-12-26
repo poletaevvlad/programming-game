@@ -51,11 +51,24 @@ public class FieldInitializator : MonoBehaviour {
         }
         lineRenderer.startComponentId = connectionLine.startComponentId;
         lineRenderer.startConnectorIndex = connectionLine.startOutputIndex;
+        lineRenderer.endComponentId = connectionLine.endComponentId;
         lineRenderer.CancelAnimation();
     }
 
     public void Start() {
         InitializeBoard();
+    }
+
+    public void DetachConnections(int component){
+        model.board._connections.RemoveAll((ConnectionLine line) => line.startComponentId == component || line.endComponentId == component);
+        foreach (Transform child in transform.Cast<Transform>().ToArray()) {
+            ConnectionLineRenderer lineRenderer = child.GetComponent<ConnectionLineRenderer>();
+            if (lineRenderer != null) {
+                if (lineRenderer.startComponentId == component || lineRenderer.endComponentId == component) {
+                    Destroy(lineRenderer.gameObject);
+                }
+            }
+        }
     }
 
 }

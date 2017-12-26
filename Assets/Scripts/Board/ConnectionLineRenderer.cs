@@ -18,6 +18,7 @@ public class ConnectionLineRenderer : MonoBehaviour {
 
     public int startComponentId;
     public int startConnectorIndex;
+    public int endComponentId;
 
     private bool shouldDelete = false;
 

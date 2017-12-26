@@ -30,6 +30,8 @@ public class PointerMovementController : MonoBehaviour {
     private int lineStartComponentId;
     private int lineStartConnectorIndex;
 
+    public FieldInitializator initializer;
+
     private void Start() {
         model = GetComponent<BoardModel>();
     }
@@ -55,6 +57,7 @@ public class PointerMovementController : MonoBehaviour {
     }
 
     private int componentX, componentY;
+    private int componentOffsetX, componentOffsetY;
     private ComponentModel componentModel;
     private ComponentGenerator componentGenerator;
 
@@ -85,7 +88,6 @@ public class PointerMovementController : MonoBehaviour {
                 connectionLine = Instantiate(connectionLinePrefab, transform);
                 Component component = outputIORenderer.transform.parent.GetComponent<ComponentModel>().component;
                 connectionLine.startComponentId = lineStartComponentId = component.id;
-
                 connectionLine.startConnectorIndex = lineStartConnectorIndex =
                     Array.IndexOf(ComponentType.GetComponentType(component.type).outputs, outputIORenderer.connector);
                 connectionLine.Append(new Coord(CurrentX, CurrentY));
@@ -111,20 +113,28 @@ public class PointerMovementController : MonoBehaviour {
                     componentGenerator = componentModel.GetComponent<ComponentGenerator>();
                     componentX = componentModel.component.coord.x;
                     componentY = componentModel.component.coord.y;
+                    componentOffsetX = CurrentX - componentModel.component.coord.x;
+                    componentOffsetY = CurrentY - componentModel.component.coord.y;
+                    hasMoved = false;
                     state = State.DraggingComponent;
                 }
             }
         }
     }
 
+    private bool hasMoved = false;
+
     private void HandleDraggingComponent(){
         if ((componentX != CurrentX || componentY != CurrentY) && CurrentX >= 0 && CurrentY >= 0) {
-            Debug.Log(String.Format("{0}, {1}", componentX, componentY));
-            componentModel.component.coord.x = CurrentX;
-            componentModel.component.coord.y = CurrentY;
+            componentModel.component.coord.x = CurrentX - componentOffsetX;
+            componentModel.component.coord.y = CurrentY - componentOffsetY;
             componentGenerator.Reposition();
             componentX = CurrentX;
             componentY = CurrentY;
+            if (!hasMoved) {
+                initializer.DetachConnections(componentModel.component.id);
+                hasMoved = true;
+            }
         }
         if (Input.GetKeyUp(KeyCode.Mouse0)) {
             state = State.Normal;
@@ -141,9 +151,7 @@ public class PointerMovementController : MonoBehaviour {
         }
         return -1;
     }
-
-
-
+    
     private void RemoveConnection(int startComponentId, int startConnectionIndex){
         bool connectionExists = false;
         for (int i = 0; i < model.board._connections.Count; i++) {
@@ -224,6 +232,7 @@ public class PointerMovementController : MonoBehaviour {
                 line.startOutputIndex = lineStartConnectorIndex;
                 line.endComponentId = lineEndComponentId;
                 line.endOutputIndex = lineEndConnectorIndex;
+                connectionLine.endComponentId = lineEndComponentId;
                 line.intermediatePoints = new Coord[connectionLine.coordinates.Count];
                 for (int i = 0; i < connectionLine.coordinates.Count; i++) {
                     line.intermediatePoints[i] = connectionLine.coordinates[i];
