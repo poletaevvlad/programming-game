@@ -126,6 +126,8 @@ public class PointerMovementController : MonoBehaviour {
                 if (model.board.CanPlaceComponent(1, 1, new Coord(CurrentX, CurrentY), -1)) {
                     state = State.SelectingNewComponent;
                     creationMenu.Show();
+                    componentX = CurrentX;
+                    componentY = CurrentY;
                 }
             }
         }
@@ -151,6 +153,20 @@ public class PointerMovementController : MonoBehaviour {
         if (Input.GetKeyUp(KeyCode.Mouse0)) {
             state = State.Normal;
         }
+    }
+
+    public void OnComponentSelected(ComponentTypeIndex index){
+        creationMenu.Hide();
+        ComponentType componentType = ComponentType.GetComponentType(index);
+        Coord coord = new Coord(componentX, componentY);
+        if (model.board.CanPlaceComponent(componentType.width, componentType.height, coord, -1)) {
+            Component component = new Component();
+            component.type = index;
+            component.coord = coord;
+            model.board.AddComponent(component);
+            initializer.AddComponent(component);
+        }
+        state = State.Normal;
     }
 
     private void HandleSelectingNewComponent(){

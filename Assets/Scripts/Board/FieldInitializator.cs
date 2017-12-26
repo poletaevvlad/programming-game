@@ -35,7 +35,7 @@ public class FieldInitializator : MonoBehaviour {
         }
     }
 
-    private void AddComponent(Component component){
+    public void AddComponent(Component component){
         Transform newTransform = Instantiate(componentPrefab, transform);
         newTransform.GetComponent<ComponentModel>().component = component;
         ComponentGenerator generator = newTransform.GetComponent<ComponentGenerator>();
