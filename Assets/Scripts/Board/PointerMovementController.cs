@@ -126,14 +126,17 @@ public class PointerMovementController : MonoBehaviour {
 
     private void HandleDraggingComponent(){
         if ((componentX != CurrentX || componentY != CurrentY) && CurrentX >= 0 && CurrentY >= 0) {
-            componentModel.component.coord.x = CurrentX - componentOffsetX;
-            componentModel.component.coord.y = CurrentY - componentOffsetY;
-            componentGenerator.Reposition();
-            componentX = CurrentX;
-            componentY = CurrentY;
-            if (!hasMoved) {
-                initializer.DetachConnections(componentModel.component.id);
-                hasMoved = true;
+            if (model.board.CanPlaceComponent(componentGenerator.componentType.width, componentGenerator.componentType.height,
+                new Coord(CurrentX - componentOffsetX, CurrentY - componentOffsetY), componentModel.component.id)) {
+                componentModel.component.coord.x = CurrentX - componentOffsetX;
+                componentModel.component.coord.y = CurrentY - componentOffsetY;
+                componentGenerator.Reposition();
+                componentX = CurrentX;
+                componentY = CurrentY;
+                if (!hasMoved) {
+                    initializer.DetachConnections(componentModel.component.id);
+                    hasMoved = true;
+                }
             }
         }
         if (Input.GetKeyUp(KeyCode.Mouse0)) {

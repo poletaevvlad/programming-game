@@ -22,7 +22,7 @@ public class ComponentGenerator : MonoBehaviour {
     }
 
     private ComponentType _componentType;
-    private ComponentType componentType {
+    public ComponentType componentType {
         get {
             if (_componentType == null) {
                 _componentType = ComponentType.GetComponentType(component.type);
