@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(ComponentModel))]
@@ -8,6 +9,7 @@ public class ComponentGenerator : MonoBehaviour {
     private BoardResizer boardResizer = null;
     public Text label;
     public Canvas canvas;
+    public float colliderOffset = 0;
 
     private Component _component = null;
     private Component component {
@@ -46,11 +48,11 @@ public class ComponentGenerator : MonoBehaviour {
     [ContextMenu("Update transform")]
     public void Position() {
         RequestResizer();
-        float xPosition = boardResizer.GetLeft(component.coord.x) + boardResizer.CellWidth * componentType.width / 2;
-        float yPosition = boardResizer.GetTop(component.coord.y) - boardResizer.CellHeight * componentType.height / 2;
-        transform.position = new Vector3(xPosition, yPosition, transform.position.z);
+        Reposition();
         SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
         spriteRenderer.size = new Vector2(componentType.width * boardResizer.CellWidth, componentType.height * boardResizer.CellHeight);
+        BoxCollider collider = GetComponent<BoxCollider>();
+        collider.size = new Vector3(componentType.width - 2 * colliderOffset, componentType.height - 2 * colliderOffset, collider.size.z);
     }
     
     private static ConnectorDirection ReverseDirection(ConnectorDirection direction){
@@ -104,4 +106,9 @@ public class ComponentGenerator : MonoBehaviour {
         canvas.transform.localPosition = new Vector3(componentType.width % 2 == 0 ? 1f/64f : 0, componentType.height % 2 == 0 ? 1f / 64f : 0, 1);
     }
 
+    public void Reposition(){
+        float xPosition = boardResizer.GetLeft(component.coord.x) + boardResizer.CellWidth * componentType.width / 2;
+        float yPosition = boardResizer.GetTop(component.coord.y) - boardResizer.CellHeight * componentType.height / 2;
+        transform.position = new Vector3(xPosition, yPosition, transform.position.z);
+    }
 }

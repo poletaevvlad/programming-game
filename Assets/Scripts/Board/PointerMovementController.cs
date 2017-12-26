@@ -6,7 +6,7 @@ using System.Linq;
 public class PointerMovementController : MonoBehaviour {
 
     public enum State {
-        Normal, DrawingConnection
+        Normal, DrawingConnection, DraggingComponent
     }
 
     private State state = State.Normal;
@@ -23,6 +23,12 @@ public class PointerMovementController : MonoBehaviour {
     public int CurrentY;
 
     private BoardModel model;
+    private Coord? possibleNextMove = null;
+    private int lineEndComponentId = -1;
+    private int lineEndConnectorIndex = -1;
+
+    private int lineStartComponentId;
+    private int lineStartConnectorIndex;
 
     private void Start() {
         model = GetComponent<BoardModel>();
@@ -42,11 +48,15 @@ public class PointerMovementController : MonoBehaviour {
             case State.DrawingConnection:
                 HandleDrawingConnection(ray);
                 break;
+            case State.DraggingComponent:
+                HandleDraggingComponent();
+                break;
         }
     }
 
-    private int lineStartComponentId;
-    private int lineStartConnectorIndex;
+    private int componentX, componentY;
+    private ComponentModel componentModel;
+    private ComponentGenerator componentGenerator;
 
     private void HandleHovering(Ray screenRay) {
         Transform newHover = null;
@@ -76,7 +86,7 @@ public class PointerMovementController : MonoBehaviour {
                 Component component = outputIORenderer.transform.parent.GetComponent<ComponentModel>().component;
                 connectionLine.startComponentId = lineStartComponentId = component.id;
 
-                connectionLine.startConnectorIndex = lineStartConnectorIndex = 
+                connectionLine.startConnectorIndex = lineStartConnectorIndex =
                     Array.IndexOf(ComponentType.GetComponentType(component.type).outputs, outputIORenderer.connector);
                 connectionLine.Append(new Coord(CurrentX, CurrentY));
                 RemoveConnection(component.id, lineStartConnectorIndex);
@@ -95,6 +105,29 @@ public class PointerMovementController : MonoBehaviour {
                         break;
                 }
             }
+        } else {
+            if (previousHover != null && (componentModel = previousHover.GetComponent<ComponentModel>()) != null) {
+                if (Input.GetKeyDown(KeyCode.Mouse0)) {
+                    componentGenerator = componentModel.GetComponent<ComponentGenerator>();
+                    componentX = componentModel.component.coord.x;
+                    componentY = componentModel.component.coord.y;
+                    state = State.DraggingComponent;
+                }
+            }
+        }
+    }
+
+    private void HandleDraggingComponent(){
+        if ((componentX != CurrentX || componentY != CurrentY) && CurrentX >= 0 && CurrentY >= 0) {
+            Debug.Log(String.Format("{0}, {1}", componentX, componentY));
+            componentModel.component.coord.x = CurrentX;
+            componentModel.component.coord.y = CurrentY;
+            componentGenerator.Reposition();
+            componentX = CurrentX;
+            componentY = CurrentY;
+        }
+        if (Input.GetKeyUp(KeyCode.Mouse0)) {
+            state = State.Normal;
         }
     }
 
@@ -109,9 +142,7 @@ public class PointerMovementController : MonoBehaviour {
         return -1;
     }
 
-    private Coord? possibleNextMove = null;
-    private int lineEndComponentId = -1;
-    private int lineEndConnectorIndex = -1;
+
 
     private void RemoveConnection(int startComponentId, int startConnectionIndex){
         bool connectionExists = false;
