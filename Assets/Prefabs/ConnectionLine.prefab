@@ -99,3 +99,6 @@ MonoBehaviour:
   targetSkipStartDist: 0
   targetSkipEndDist: 0
   animationSpeed: 15
+  startComponentId: 0
+  startConnectorIndex: 0
+  endComponentId: 0

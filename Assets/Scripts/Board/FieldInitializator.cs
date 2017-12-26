@@ -64,8 +64,10 @@ public class FieldInitializator : MonoBehaviour {
         foreach (Transform child in transform.Cast<Transform>().ToArray()) {
             ConnectionLineRenderer lineRenderer = child.GetComponent<ConnectionLineRenderer>();
             if (lineRenderer != null) {
-                if (lineRenderer.startComponentId == component || lineRenderer.endComponentId == component) {
-                    Destroy(lineRenderer.gameObject);
+                if (lineRenderer.startComponentId == component){
+                    lineRenderer.Disconnect(false);
+                } else if (lineRenderer.endComponentId == component) {
+                    lineRenderer.Disconnect(true);
                 }
             }
         }

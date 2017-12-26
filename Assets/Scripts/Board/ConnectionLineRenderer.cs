@@ -113,9 +113,17 @@ public class ConnectionLineRenderer : MonoBehaviour {
         skipStartDist = targetSkipStartDist;
     }
 
-    public void Disconnect(){
+    public void Disconnect(bool reverse){
         shouldDelete = true;
-        targetSkipStartDist = targetSkipEndDist;
+        if (reverse) {
+            targetSkipEndDist = targetSkipStartDist;
+        } else {
+            targetSkipStartDist = targetSkipEndDist;
+        }
+    }
+
+    public void Disconnect(){
+        Disconnect(false);
     }
 
     public void Append(int x, int y){
@@ -162,12 +170,17 @@ public class ConnectionLineRenderer : MonoBehaviour {
     }
 
     public void Update() {
+        bool animated = false;
         if (Mathf.Abs(targetSkipEndDist - skipEndDist) > 1e-4) {
             skipEndDist = AnimateValue(targetSkipEndDist, skipEndDist, animationSpeed * Time.deltaTime * Math.Abs(targetSkipEndDist - skipEndDist));
+            animated = true;
         }
         if (Mathf.Abs(targetSkipStartDist - skipStartDist) > 1e-4) {
             skipStartDist = AnimateValue(targetSkipStartDist, skipStartDist, animationSpeed * Time.deltaTime * Math.Abs(targetSkipStartDist - skipStartDist));
-        } else if (shouldDelete) {
+            animated = true;
+        }
+
+        if (shouldDelete && ! animated) {
             Destroy(gameObject);
         }
         UpdateLine();
