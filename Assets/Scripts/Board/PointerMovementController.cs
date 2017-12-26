@@ -6,7 +6,7 @@ using System.Linq;
 public class PointerMovementController : MonoBehaviour {
 
     public enum State {
-        Normal, DrawingConnection, DraggingComponent
+        Normal, DrawingConnection, DraggingComponent, SelectingNewComponent
     }
 
     private State state = State.Normal;
@@ -29,7 +29,7 @@ public class PointerMovementController : MonoBehaviour {
 
     private int lineStartComponentId;
     private int lineStartConnectorIndex;
-
+    public ComponentCreationMenu creationMenu;
     public FieldInitializator initializer;
 
     private void Start() {
@@ -107,16 +107,21 @@ public class PointerMovementController : MonoBehaviour {
                         break;
                 }
             }
+        } else if (previousHover != null && (componentModel = previousHover.GetComponent<ComponentModel>()) != null) {
+            if (Input.GetKeyDown(KeyCode.Mouse0)) {
+                componentGenerator = componentModel.GetComponent<ComponentGenerator>();
+                componentX = componentModel.component.coord.x;
+                componentY = componentModel.component.coord.y;
+                componentOffsetX = CurrentX - componentModel.component.coord.x;
+                componentOffsetY = CurrentY - componentModel.component.coord.y;
+                hasMoved = false;
+                state = State.DraggingComponent;
+            }
         } else {
-            if (previousHover != null && (componentModel = previousHover.GetComponent<ComponentModel>()) != null) {
-                if (Input.GetKeyDown(KeyCode.Mouse0)) {
-                    componentGenerator = componentModel.GetComponent<ComponentGenerator>();
-                    componentX = componentModel.component.coord.x;
-                    componentY = componentModel.component.coord.y;
-                    componentOffsetX = CurrentX - componentModel.component.coord.x;
-                    componentOffsetY = CurrentY - componentModel.component.coord.y;
-                    hasMoved = false;
-                    state = State.DraggingComponent;
+            if (Input.GetKeyDown(KeyCode.Mouse0)) {
+                if (model.board.CanPlaceComponent(1, 1, new Coord(CurrentX, CurrentY), -1)) {
+                    state = State.SelectingNewComponent;
+                    creationMenu.Show();
                 }
             }
         }
